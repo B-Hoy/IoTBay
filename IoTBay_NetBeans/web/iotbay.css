@@ -1,0 +1,12 @@
+.login_button {
+    text-align: center;
+    width: 25%;
+    margin: auto;
+    border: 3px solid black;
+}
+table, th, td{
+    border: 1px solid black;
+}
+th{
+    background-color: #66ccff;
+}

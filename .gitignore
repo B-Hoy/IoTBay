@@ -1,2 +1,3 @@
 *.class
+classes/uts/iotbay/*class
 *.war

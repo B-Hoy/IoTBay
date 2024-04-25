@@ -1,3 +1,2 @@
-/IoTBay_NetBeans/nbproject/private/
-/IoTBay_NetBeans/build/
-/IoTBay_NetBeans/dist/
+*.class
+*.war

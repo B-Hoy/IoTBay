@@ -12,13 +12,16 @@ import java.io.IOException;
 public class Database{
 	Connection conn = null;
 	public Database(){
+		File temp_file = null;
 		try {
 			Class.forName("org.sqlite.JDBC"); // Need this in case Glassfish doesn't load it automatically
 		} catch (ClassNotFoundException e){
 			System.out.println("ERROR: " + e.getMessage());
 		}
 		try{
-			conn = DriverManager.getConnection("jdbc:sqlite:" + File.createTempFile("sql", ".db").getAbsolutePath());
+			temp_file = File.createTempFile("sql", ".db");
+			temp_file.deleteOnExit();
+			conn = DriverManager.getConnection("jdbc:sqlite:" + temp_file.getAbsolutePath());
 			// makes a temp file wherever so it doesn't break on someone else's system
         } catch (SQLException e){
             System.out.println("ERROR: " + e.getMessage());

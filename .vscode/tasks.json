@@ -6,7 +6,7 @@
             "type": "shell",
             "command": "javac WEB-INF/classes/uts/iotbay/*java",
             "windows": {
-                "command": "javac WEB-INF\\classes\\uts\\iotbay\\*java"
+                "command": "C:\\Program Files\\Java\\jdk-21\\bin\\javac WEB-INF\\classes\\uts\\iotbay\\*java"
             },
             "options": {
             },

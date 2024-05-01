@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Home | Ecommerce</title>
+        <link rel="stylesheet" href="search.css">
+    </head>
+    <body>
+        <div class="topnav">
+            <a href="main.html">Home</a>
+            <a class="active" href="#search">Search</a>
+            <a href="myProfile.html">My Profile</a>
+            <a href="cart.html">Cart</a>
+            <a href="logout.html" style="float:right;">Logout</a>
+        </div>
+        
+        <div class="container">
+            <p>Search IoT Bay Products</p>
+            <input id="searchbar"
+                onkeyup="search()"
+                type="text" name="search"
+                placeholder="Search products..">
+        </div>
+    </body>
+</html>

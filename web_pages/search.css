@@ -33,4 +33,26 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.content {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.filters {
+  width: 20%; /* Adjust width as needed */
+  padding-right: 10px;
+}
+
+.results {
+  width: 75%; /* Adjust width as needed */
+  padding-left: 10px;
+}
+
+.results-container {
+  margin-top: 20px;
+  text-align: left;
+}
+
+
 

@@ -1,5 +1,6 @@
 <%@page import="uts.iotbay.Database"%>
 <%@page import="uts.iotbay.User"%>
+<%@page import="uts.iotbay.UserLogEntry"%>
 <html>
 <head>
 <title>JSP Database Testing</title>
@@ -36,19 +37,43 @@ String form_card_num = request.getParameter("card_num");
 String form_card_exp = request.getParameter("card_exp");
 String form_phone_num = request.getParameter("phone_num");
 String form_type = request.getParameter("form_type");
-if (form_email != null){ // if we got here through the form
-	if (form_type.equals("insert")){
-		db.create_user(form_email, form_first_name, form_last_name, form_password, false, form_card_num, form_card_exp, form_phone_num);
-	}else if (form_type.equals("update")){
-		db.update_user(form_email, form_first_name, form_last_name, form_password, form_card_num, form_card_exp, form_phone_num);
-	}else if (form_type.equals("delete")){
-		db.delete_user(form_email);
+if (form_type != null){ // if we got here through a form
+	%><%= form_type %><%
+	switch (form_type){
+		case "insert":
+			db.create_user(form_email, form_first_name, form_last_name, form_password, false, form_card_num, form_card_exp, form_phone_num);
+			break;
+		case "update":
+			db.update_user(form_email, form_first_name, form_last_name, form_password, form_card_num, form_card_exp, form_phone_num);
+			break;
+		case "delete":
+			db.delete_user(form_email);
+			break;
+		case "login":
+			int local_session_id = db.add_user_login(form_email);
+			if (local_session_id != -1){
+				session.setAttribute("session_id", local_session_id);
+			}else{
+				// Login failed, reload the page or throw a popup or something
+			}
+			break;
+		case "logout":
+			if (session.getAttribute("session_id") != null){ // just to make sure the user is actually logged in
+				db.set_user_logout((int)session.getAttribute("session_id"));
+				session.removeAttribute("session_id");
+			}
+			break;
 	}
 }
 
-
-//User test_user = db.get_user("testacc1@uts.edu.au");
 User[] users = db.get_all_users();
+if (session.getAttribute("session_id") == null){%>
+You are not logged in.
+<%
+}else{%>
+	You are logged in as <%=db.get_user_log((int)session.getAttribute("session_id")).get_email()%>
+<%
+}
 %>
 <table class="user_table">
 	<thead><th colspan="10"><b>User Table</b></th></thead>
@@ -59,7 +84,9 @@ User[] users = db.get_all_users();
 </table>
 <%= new String("It Works!") %>
 <br>
-<b>Make a new user:</b>
+<table class="user_form_table">
+<thead><th><b>Make a new user:</b></th><th><b>Update User Details:</b></th><th><b>Delete User:</b> </th></thead>
+<tr><td>
 <form action="/iotbay/web_pages/hello.jsp" method="POST">
 	<input type="hidden" id="form_type" name="form_type" value="insert">
 	<label for="email">Email:</label><br>
@@ -78,8 +105,8 @@ User[] users = db.get_all_users();
 	<input type="text" id="phone_num" name="phone_num"><br><br>
 	<input type="submit" value="Submit">
 </form> 
-<br>
-<b>Update user details:</b>
+</td>
+<td>
 <form action="/iotbay/web_pages/hello.jsp" method="POST">
 	<input type="hidden" id="form_type" name="form_type" value="update">
 	<label for="email">Email:</label><br>
@@ -98,13 +125,44 @@ User[] users = db.get_all_users();
 	<input type="text" id="phone_num" name="phone_num"><br><br>
 	<input type="submit" value="Submit">
 </form>
-<br>
-<b>Delete User:</b> 
+</td>
+<td>
 <form action="/iotbay/web_pages/hello.jsp" method="POST">
 	<input type="hidden" id="form_type" name="form_type" value="delete">
 	<label for="email">Email:</label><br>
 	<input type="text" id="email" name="email"><br>
 	<input type="submit" value="Submit">
 </form>
+</td>
+</tr>
+</table>
+<br>
+<% UserLogEntry[] user_logs = db.get_all_user_logs(); %>
+<table class="user_table">
+	<thead><th colspan="10"><b>User Login Table</b></th></thead>
+	<thead><th>Session ID</th><th>Email</th><th>Login Date/Time</th><th>Logout Date/Time</th>
+	<% for (int i = 0; i < user_logs.length; i++){%>
+	<tr><td><%=user_logs[i].get_session_id()%></td><td><%=user_logs[i].get_email()%></td><td><%=user_logs[i].get_login_date()%></td><td><%=user_logs[i].get_logout_date()%></td>
+	<%}%>
+</table>
+<table class="user_form_table">
+	<thead><th><b>Login As User</b></th><th><b>Logout as Current User</b></th></thead>
+	<tr>
+		<td>
+		<form action="/iotbay/web_pages/hello.jsp" method="POST">
+			<input type="hidden" id="form_type" name="form_type" value="login">
+			<label for="email">Email:</label><br>
+			<input type="text" id="email" name="email"><br>
+			<input type="submit" value="Login">
+		</form>
+		</td>
+		<td>
+			<form action="/iotbay/web_pages/hello.jsp" method="POST">
+				<input type="hidden" id="form_type" name="form_type" value="logout">
+				<input type="submit" value="Logout">
+			</form>
+		</td>
+	</tr>
+</table>
 </body>
 </html>

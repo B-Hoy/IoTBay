@@ -31,10 +31,9 @@ public class Database{
 			stmt.executeUpdate("INSERT INTO Users VALUES('testacc1@uts.edu.au', 12345, 'Testing', 'User', 'securepassword', DATETIME('now', '+10 hours'), 0, NULL, NULL, NULL)");
 			stmt.executeUpdate("INSERT INTO Users VALUES('testacc2@uts.edu.au', 67890, 'Another', 'Tester', 'no', DATETIME('now', '+10 hours'), 1, '1234567890123456', '01/99', '+61400000000')");
 
-			//stmt.executeUpdate("DROP TABLE IF EXISTS Products");
-			//stmt.executeUpdate("CREATE TABLE Users (email TEXT NOT NULL PRIMARY KEY, first_name TEXT NOT NULL, last_name TEXT NOT NULL, password TEXT NOT NULL, reg_date TEXT NOT NULL, is_admin BOOL NOT NULL, card_num INTEGER, card_exp INTEGER, phone_num TEXT)");
-			//stmt.executeUpdate("INSERT INTO Users VALUES('testacc1@uts.edu.au', 'Testing', 'User', 'securepassword', DATETIME('now'), 0, NULL, NULL, NULL)");
-			//stmt.executeUpdate("INSERT INTO Users VALUES('testacc2@uts.edu.au', 'Another', 'Tester', 'no', DATETIME('now'), 1, '1234567890123456', '01/99', '+61400000000')");
+			// This'll be used when the login/logout actions are set up
+			stmt.executeUpdate("DROP TABLE IF EXISTS User_Logins");
+			stmt.executeUpdate("CREATE TABLE User_Logins (session_id INTEGER NOT NULL PRIMARY KEY, email TEXT NOT NULL, login_date TEXT NOT NULL, logout_date TEXT)");
         } catch (Exception e){
             System.out.println("ERROR: " + e.getMessage());
         }
@@ -77,15 +76,22 @@ public class Database{
 
 		return user_arr.toArray(new User[]{});
 	}
-	int create_id(){
+	int create_id(String table){
 		int random = 0;
 		boolean valid = false;
-		PreparedStatement stmt;
 		ResultSet results;
 		while (!valid){
 			try{
+				PreparedStatement stmt;
 				random = ThreadLocalRandom.current().nextInt(10000, 99999 + 1);
-				stmt = conn.prepareStatement("SELECT * FROM Users WHERE id = (?)");
+				switch (table){
+					case "User_Logins":
+						stmt = conn.prepareStatement("SELECT * FROM User_Logins WHERE session_id = (?)");
+						break;
+					case "Users":
+					default:
+						stmt = conn.prepareStatement("SELECT * FROM Users WHERE id = (?)");
+				}
 				stmt.setInt(1, random);
 				results = stmt.executeQuery();
 				if (results.next()){
@@ -95,13 +101,27 @@ public class Database{
 				}
 			}catch (SQLException e){
 				System.out.println("ERROR: " + e.getMessage());
+				random = -1;
+				valid = true;
 			}
 		}
 		return random;
 	}
+	public boolean check_email_acc_exists(String email){
+		try{
+			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Users WHERE email = (?)");
+			stmt.setString(1, email);
+			ResultSet results = stmt.executeQuery();
+			if (results.next()){ // email already exists in db
+				return true;
+			}
+		}catch (SQLException e){
+			System.out.println("ERROR: " + e.getMessage());
+		}
+		return false;
+	}
 	public boolean create_user(String email, String first_name, String last_name, String password, boolean is_admin, String card_num, String card_exp, String phone_num){
 		PreparedStatement stmt;
-		ResultSet results;
 		// checks to see if string is empty, subtitutes as null (avoids people getting a username or password that is just an empty string)
 		if (email != null && email.trim().isEmpty()){
 			email = null;
@@ -125,15 +145,10 @@ public class Database{
 			phone_num = null;
 		}
 		try{
-			stmt = conn.prepareStatement("SELECT * FROM Users WHERE email = (?)");
-			stmt.setString(1, email);
-			results = stmt.executeQuery();
-				if (results.next()){ // email already exists in db
-					return false;
-				}
+			if (check_email_acc_exists(email)){return false;}
 			stmt = conn.prepareStatement("INSERT INTO Users VALUES((?), (?), (?), (?), (?), DATETIME('now', '+10 hours'), (?), (?), (?), (?))");
 			stmt.setString(1, email);
-			stmt.setInt(2, create_id());
+			stmt.setInt(2, create_id("Users"));
 			stmt.setString(3, first_name);
 			stmt.setString(4, last_name);
 			stmt.setString(5, password);
@@ -192,6 +207,63 @@ public class Database{
 		}catch (SQLException e){
 			System.out.println("ERROR: " + e.getMessage());
 		}
+	}
+	// Call this on a user login, we save the session ID generated here in the user's session. Returns -1 on failure
+	public int add_user_login(String email){
+		int session_id = -1;
+		try{
+			if (!check_email_acc_exists(email)){return session_id;}
+			session_id = create_id("User_Logins");
+			PreparedStatement stmt = conn.prepareStatement("INSERT INTO User_Logins VALUES ((?), (?), DATETIME('now', '+10 hours'), NULL)");
+			stmt.setInt(1, session_id);
+			stmt.setString(2, email);
+			stmt.executeUpdate();
+		}catch (SQLException e){
+			System.out.println("ERROR: " + e.getMessage());
+		}
+		return session_id;
+	}
+	// Call this when the user actions a logout
+	public void set_user_logout(int session_id){
+		try{
+			PreparedStatement stmt = conn.prepareStatement("UPDATE User_Logins SET logout_date = DATETIME('now', '+10 hours') WHERE session_id = (?)");
+			stmt.setInt(1, session_id);
+			stmt.executeUpdate();
+		}catch (SQLException e){
+			System.out.println("ERROR: " + e.getMessage());
+		}
+	}
+	public UserLogEntry get_user_log(int session_id){
+		UserLogEntry log = new UserLogEntry();
+		try{
+			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM User_Logins WHERE session_id = (?)");
+			stmt.setInt(1, session_id);
+			ResultSet results = stmt.executeQuery();
+			while (results.next()){
+				log.set_email(results.getString("email"));
+				log.set_session_id(results.getInt("session_id"));
+				log.set_login_date(results.getString("login_date"));
+				log.set_logout_date(results.getString("logout_date"));
+			}
+		}catch (SQLException e){
+			System.out.println("ERROR: " + e.getMessage());
+		}
+		return log;
+	}
+	public UserLogEntry[] get_all_user_logs(){
+		ArrayList<UserLogEntry> log_arr = new ArrayList<UserLogEntry>();
+		try{
+			Statement stmt = conn.createStatement();
+			stmt.setQueryTimeout(5);
+			ResultSet results = stmt.executeQuery("SELECT * FROM User_Logins");
+			while (results.next()){
+				log_arr.add(new UserLogEntry(results.getInt("session_id"), results.getString("email"), results.getString("login_date"), results.getString("logout_date")));
+			}
+		}catch (SQLException e){
+			System.out.println("ERROR: " + e.getMessage());
+		}
+
+		return log_arr.toArray(new UserLogEntry[]{});
 	}
 	public void disconnect(){
 		if (conn != null){

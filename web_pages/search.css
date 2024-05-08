@@ -53,6 +53,189 @@ body {
   margin-top: 20px;
   text-align: left;
 }
+/* This is for search bar */
+.search-container {
+  display: flex; /* Aligns the input and button side by side */
+  margin: 20px auto;
+  width: 100%; /* Adjust width as per your design requirement */
+  max-width: 800px; /* Maximum width of the search bar */
+}
 
+#searchbar {
+  flex-grow: 1; /* Makes the input field take up the extra space */
+  padding: 10px 20px; /* Padding inside the input field */
+  font-size: 16px; /* Font size of the input text */
+  border: 2px solid #ccc; /* Border around the input field */
+  border-right: none; /* Removes the right border */
+}
+
+.search-button {
+  padding: 10px 20px;
+  background-color: black;
+  color: white;
+  border: none;
+  cursor: pointer; /* Makes the cursor a pointer when hovered over the button */
+}
+
+.search-button span {
+  font-size: 16px;
+}
+
+#searchbar:focus, .search-button:hover {
+  border-color: #666; /* Changes border color when focused or button is hovered */
+}
+
+#searchbar:focus {
+  outline: none; /* Removes the default focus outline */
+}
+@media (max-width: 600px) {
+  .search-container {
+      flex-direction: column; /* Stacks the input field and button vertically on small screens */
+      width: 90%; /* Reduces width to fit smaller screens */
+  }
+
+  #searchbar, .search-button {
+      width: 100%; /* Full width for both input and button */
+      border-radius: 0; /* Adjust border radius as needed */
+  }
+
+  .search-button {
+      border-top: 1px solid #ccc; /* Adds a top border to the button when stacked */
+  }
+}
+/* This is for filters*/
+.filters {
+  font-family: Arial, sans-serif;
+  color: #333;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.filter-section {
+  margin-bottom: 20px;
+}
+
+.filter-section h3 {
+  font-size: 16px;
+  color: #000;
+  margin-bottom: 5px;
+}
+
+.filter-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.filter-section li {
+  line-height: 1.6;
+}
+
+.filter-section li label {
+  margin-left: 8px;
+}
+
+input[type="checkbox"] {
+  cursor: pointer;
+}
+
+input[type="text"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+button {
+  padding: 8px 16px;
+  background-color: #0066c0;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056a0;
+}
+
+@media (max-width: 768px) {
+  .filters {
+      width: 100%;
+      padding: 5px;
+  }
+
+  .filter-section h3 {
+      font-size: 14px;
+  }
+
+  input[type="text"], button {
+      width: 100%; /* Make input fields and buttons full width on small screens */
+  }
+}
+/* This is for prduct lists */
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  max-width: 300px;
+  padding: 25px;
+  margin: auto;
+  text-align: center;
+  font-family: arial;
+}
+
+.price {
+  color: grey;
+  font-size: 22px;
+}
+
+.card button {
+  border: none;
+  outline: 0;
+  padding: 12px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  font-size: 18px;
+}
+
+.card button:hover {
+  opacity: 0.7;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.column {
+  float: left;
+  width: 25%;
+  padding: 0 10px;
+}
+
+
+.row {margin: 0 -5px;}
+
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+    display: block;
+    margin-bottom: 20px;
+  }
+}
 
 

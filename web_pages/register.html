@@ -3,65 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration Page</title>
-    <link rel="stylesheet" href="register.css">
+    <title>Home | Ecommerce</title>
+    <link rel="stylesheet" href="myProfile.css">
 </head>
+
 <body>
 
     <div class="container">
-        <h1>Registration</h1>
-        <form id="registerForm" onsubmit="return validateForm()">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required><br>
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required><br>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required><br>
-            <label for="address">Address:</label>
-            <input type="text" id="address" name="address" required><br>
-            <label for="creditCard">Credit Card Info:</label>
-            <input type="text" id="creditCard" name="creditCard" maxlength="16" required
-                   oninput="formatCreditCard(this.value)"><br>
-            <button type="submit" id="registerButton">Register</button>
-            <!-- Add error message for unfilled fields -->
-            <p id="errorMessage">Please fill in all fields.</p>
-        </form>
+        <h1>Register</h1>
+
+
+        <form>          
+
+
+            <div class="account-info">
+                <h2>Account Information</h2>
+                <p><strong>Name:</strong></p>
+                <div class="container">
+                    <p>Enter Name</p>
+                    <input id="namebar"
+                        type="text" name="name"
+                        placeholder="John Smith">
+                </div>
+
+                <p><strong>Email:</strong></p>
+                <div class="container">
+                    <p>Enter Email</p>
+                    <input id="emailbar"
+                        type="text" name="email"
+                        placeholder="Email@email.com">
+                </div>
+
+                <p><strong>Password:</strong></p>
+                <div class="container">
+                    <p>Enter Password</p>
+                    <input id="passwordbar"
+                        type="password" name="password"
+                        placeholder="********">
+                </div>
+
+                <p><strong>Address:</strong></p>
+                <div class="container">
+                    <p>Enter Address</p>
+                    <input id="Addressbar"
+                        type="text" name="Address"
+                        placeholder=" 123 Address street">
+                </div>
+
+                <p><strong>Credit Card Info:</strong> ************1234</p>
+                <div class="container">
+                    <p>Enter Credit Card Info</p>
+                    <input id="card details"
+                        type="text" name="carddetails"
+                        placeholder="************1234">
+                </div>
+            </form>
+            
+            <br>
+            <br>
+            <button>Create Account</button>
+        </div>
     </div>
-    <!-- Add your JavaScript code here -->
-    <script>
-        function validateForm() {
-            var name = document.getElementById("name").value;
-            var email = document.getElementById("email").value;
-            var password = document.getElementById("password").value;
-            var address = document.getElementById("address").value;
-            var creditCard = document.getElementById("creditCard").value;
 
-            if (!name || !email || !password || !address || !creditCard) {
-                // Show error message for unfilled fields
-                document.getElementById("errorMessage").style.display = "block";
-                return false; // Prevent form submission
-            }
 
-            // Save user details to local storage
-            var userDetails = {
-                name: name,
-                email: email,
-                password: password,
-                address: address,
-                creditCard: creditCard
-            };
-            localStorage.setItem('userDetails', JSON.stringify(userDetails));
-
-            // Redirect to login page after successful registration
-            window.location.href = "login.html";
-            return false; // Prevent default form submission
-        }
-
-        function formatCreditCard(value) {
-            // Replace all characters in the credit card number with asterisks except the last four digits
-            var maskedValue = value.slice(0, -4).replace(/./g, '*') + value.slice(-4);
-            document.getElementById("creditCard").value = maskedValue;
-        }
-    </script>
 </body>
+
 </html>

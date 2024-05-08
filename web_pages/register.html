@@ -21,7 +21,7 @@
             <input type="text" id="address" name="address" required><br>
             <label for="creditCard">Credit Card Info:</label>
             <input type="text" id="creditCard" name="creditCard" maxlength="16" required
-                   oninput="formatCreditCard(this.value)"><br>
+            oninput="formatCreditCard(this.value)" onkeypress="return onlyNumbers(event)">
             <button type="submit" id="registerButton">Register</button>
             <!-- Add error message for unfilled fields -->
             <p id="errorMessage">Please fill in all fields.</p>
@@ -29,6 +29,12 @@
     </div>
     <!-- Add your JavaScript code here -->
     <script>
+
+        function onlyNumbers(event) {
+            const key = event.keyCode || event.which;
+            return key >= 48 && key <= 57; // Allow only numbers
+        }
+
         function validateForm() {
             var name = document.getElementById("name").value;
             var email = document.getElementById("email").value;

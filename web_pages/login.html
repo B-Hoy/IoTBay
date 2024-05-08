@@ -22,27 +22,18 @@
     <!-- Add your JavaScript code here -->
     <script>
         function validateForm() {
-            var name = document.getElementById("name").value;
-            var email = document.getElementById("email").value;
-            var password = document.getElementById("password").value;
-            var address = document.getElementById("address").value;
-            var creditCard = document.getElementById("creditCard").value;
+        var email = document.getElementById("email").value;
+        var password = document.getElementById("password").value;
 
-            if (!email || !password) {
-                // Show error message for unfilled fields
-                document.getElementById("errorMessage").style.display = "block";
-                return false; // Prevent form submission
-            }
-
-            // Redirect to main.html after successful form submission
-            window.location.href = "main.html";
-            return false; // Prevent default form submission
+        if (!email || !password) {
+            // Show error message for unfilled fields
+            document.getElementById("errorMessage").style.display = "block";
+            return false; // Prevent form submission
         }
 
-        function formatCreditCard(value) {
-            // Replace all characters in the credit card number with asterisks except the last four digits
-            var maskedValue = value.slice(0, -4).replace(/./g, '*') + value.slice(-4);
-            document.getElementById("creditCard").value = maskedValue;
+        // Redirect to main.html after successful form submission
+        window.location.href = "main.html";
+        return false; // Prevent default form submission
         }
     </script>
 </body>

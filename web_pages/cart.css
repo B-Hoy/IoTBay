@@ -40,13 +40,7 @@
     margin-top: 20px;
     margin-bottom: 10px;
  }
-
-
-   /* Styling for product details */
-    .product-details {
-
-    }
-
+ 
  .counter {
     display: flex;
     align-items: center;
@@ -79,6 +73,8 @@
     border: none;
     cursor: pointer;
  }
+ 
 
-  
-  
+
+
+

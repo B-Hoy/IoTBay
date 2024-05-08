@@ -1,0 +1,32 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+form {
+    margin: 0 auto;
+    width: 300px;
+    text-align: center;
+}
+
+input[type="email"],
+input[type="password"],
+button {
+    display: block;
+    margin: 10px auto;
+    width: calc(100% - 16px); /* Adjusted width to account for border */
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
+
+#errorMessage {
+    color: red;
+    display: none; /* Hide the error message by default */
+}

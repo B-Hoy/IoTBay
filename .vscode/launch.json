@@ -7,8 +7,9 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Open login.html",
-            "file": "c:\\School\\uni\\Year Three\\Intro Software Dev\\Ass 1\\IoTBay-1\\web_pages\\login.html"
+            "name": "Launch Chrome against localhost",
+            "url": "http://localhost:8080",
+            "webRoot": "${workspaceFolder}"
         }
     ]
 }

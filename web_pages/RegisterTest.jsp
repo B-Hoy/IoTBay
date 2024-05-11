@@ -2,9 +2,8 @@
 <%@page import="uts.iotbay.User"%>
 <%@page import="uts.iotbay.UserLogEntry"%>
 
+<html>
 
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -78,7 +77,8 @@ You are not logged in.
         <h1>Register</h1>
 
 
-        <form>          
+        <form action="/iotbay/web_pages/hello.jsp" method="POST">          
+            <input type="hidden" id="form_type" name="form_type" value="insert">
 
             <div class="account-info">
                 <h2>Account Information</h2>
@@ -115,7 +115,7 @@ You are not logged in.
                         placeholder="********">
                 </div>
 
-                <p><strong>Credit Card Info:</strong> ************1234</p>
+                <p><strong>Credit Card Info:</strong></p>
                 <div class="container">
                     <p>Enter Credit Card Info</p>
                     <input id="card_num"
@@ -123,7 +123,7 @@ You are not logged in.
                         placeholder="************1234">
                 </div>
 
-                <p><strong>card_exp:</strong></p>
+                <p><strong>Card Expiry:</strong></p>
                 <div class="container">
                     <p>Enter Card Expiry</p>
                     <input id="card_exp"
@@ -133,20 +133,17 @@ You are not logged in.
 
                 <p><strong>Phone Number:</strong></p>
                 <div class="container">
-                    <p>Enter Address</p>
+                    <p>Enter Phone Number</p>
                     <input id="phone_num"
                         type="text" name="phone_num"
                         placeholder=" 0412345678 ">
                 </div>
                 <br>
                 <br>
-                <input type="Create Account" value="Submit">
+                <input type="submit" value="Submit">
 
             </form>
             
-            <br>
-            <br>
-            <button>Create Account</button>
         </div>
     </div>
 

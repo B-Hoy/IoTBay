@@ -1,5 +1,6 @@
 package uts.iotbay;
 public class Product {
+    int id;
     String name;
     double price;
     int rating;
@@ -7,12 +8,19 @@ public class Product {
     String image_location;
     public Product(){
     }
-    public Product(String name, double price, int rating, String brand, String image_location){
+    public Product(int id, String name, double price, int rating, String brand, String image_location){
+        this.id = id;
         this.name = name;
         this.price = price;
         this.rating = rating;
         this.brand = brand;
         this.image_location = image_location;
+    }
+    public int get_id(){
+        return id;
+    }
+    public void set_id(int id){
+        this.id = id;
     }
     public String get_name() {
         return name;

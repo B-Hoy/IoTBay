@@ -37,11 +37,11 @@ public class Database{
 			// Test data go here
 			stmt.executeUpdate("DROP TABLE IF EXISTS Products");
 			// The image_location has an implicit "web_pages/images/" put at the start of it
-			stmt.executeUpdate("CREATE TABLE Products (name TEXT NOT NULL, price REAL NOT NULL, rating INTEGER NOT NULL, brand TEXT NOT NULL, image_location TEXT NOT NULL)");
+			stmt.executeUpdate("CREATE TABLE Products (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL, price REAL NOT NULL, rating INTEGER NOT NULL, brand TEXT NOT NULL, image_location TEXT)");
 			// More test data go here
-			stmt.executeUpdate("UPDATE TABLE Products VALUES('IoT-Enabled Smart Light Bulb', 15.99, 4, 'Connect SmartHome', 'smart_light.jpg')");
-			stmt.executeUpdate("UPDATE TABLE Products VALUES('WiFi Smart Camera', 139.49, 5, 'Arlo', 'smart_camera.png')");
-			stmt.executeUpdate("UPDATE TABLE Products VALUES('Doorbell Security Camera Pro', 349.00, 3, 'Ring', 'ring_camera.png')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10001, 'IoT-Enabled Smart Light Bulb', 15.99, 4, 'Connect SmartHome', 'smart_light.jpg')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10002, 'WiFi Smart Camera', 139.49, 5, 'Arlo', 'smart_camera.png')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10003, 'Doorbell Security Camera Pro', 349.00, 3, 'Ring', 'ring_camera.png')");
         } catch (Exception e){
             System.out.println("ERROR: " + e.getMessage());
         }
@@ -92,9 +92,8 @@ public class Database{
 			try{
 				PreparedStatement stmt;
 				random = ThreadLocalRandom.current().nextInt(10000, 99999 + 1);
-				stmt = conn.prepareStatement("SELECT * FROM (?) WHERE id = (?)");
-				stmt.setString(1, table);
-				stmt.setInt(2, random);
+				stmt = conn.prepareStatement("SELECT * FROM " + table + " WHERE id = (?)");
+				stmt.setInt(1, random);
 				results = stmt.executeQuery();
 				if (results.next()){
 					continue;
@@ -228,7 +227,7 @@ public class Database{
 	// Call this when the user actions a logout
 	public void set_user_logout(int session_id){
 		try{
-			PreparedStatement stmt = conn.prepareStatement("UPDATE User_Logins SET logout_date = DATETIME('now', '+10 hours') WHERE session_id = (?)");
+			PreparedStatement stmt = conn.prepareStatement("UPDATE User_Logins SET logout_date = DATETIME('now', '+10 hours') WHERE id = (?)");
 			stmt.setInt(1, session_id);
 			stmt.executeUpdate();
 		}catch (SQLException e){
@@ -266,6 +265,94 @@ public class Database{
 		}
 
 		return log_arr.toArray(new UserLogEntry[]{});
+	}
+	public boolean add_product(String name, double price, int rating, String brand){
+		// The image location is set by default to a missing image, admin can change this later
+		if (name != null && name.trim().isEmpty()){
+			name = null;
+		}
+		if (brand != null && brand.trim().isEmpty()){
+			brand = null;
+		}
+		try{
+			PreparedStatement stmt = conn.prepareStatement("INSERT INTO Products VALUES((?), (?), (?), (?), (?), NULL)");
+			stmt.setInt(1, create_id("Products"));
+			stmt.setString(2, name);
+			stmt.setDouble(3, price);
+			stmt.setInt(4, rating);
+			stmt.setString(5, brand);
+			stmt.executeUpdate();
+			return true;
+		}catch (SQLException e){
+			System.out.println("ERROR: " + e.getMessage());
+			return false;
+		}
+	}
+	public Product get_product(int id){
+		Product db_product = new Product();
+		try{
+			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Products WHERE email = (?)");
+			stmt.setInt(1, id);
+			ResultSet results = stmt.executeQuery();
+			while (results.next()){
+				db_product.set_name(results.getString("name"));
+				db_product.set_id(results.getInt("id"));
+				db_product.set_price(results.getDouble("price"));
+				db_product.set_rating(results.getInt("rating"));
+				db_product.set_brand(results.getString("brand"));
+				db_product.set_image_location(results.getString("image_location"));
+			}
+		}catch (SQLException e){
+			System.out.println("ERROR: " + e.getMessage());
+		}
+		return db_product;
+	}
+	public void delete_product(int id){
+		try{
+			PreparedStatement stmt = conn.prepareStatement("DELETE FROM Products WHERE id = (?)");
+			stmt.setInt(1, id);
+			stmt.executeUpdate();
+		}catch (SQLException e){
+			System.out.println("ERROR: " + e.getMessage());
+		}
+	}
+	public void update_product(int id, String name, double price, int rating, String brand, String image_location){
+		if (name != null && name.trim().isEmpty()){
+			name = null;
+		}
+		if (brand != null && brand.trim().isEmpty()){
+			brand = null;
+		}
+		if (image_location != null && image_location.trim().isEmpty()){
+			image_location = null;
+		}
+		try{
+			PreparedStatement stmt = conn.prepareStatement("UPDATE Products SET name = (?), price = (?), rating = (?), brand = (?), image_location = (?) WHERE id = (?)");
+			stmt.setString(1, name);
+			stmt.setDouble(2, price);
+			stmt.setInt(3, rating);
+			stmt.setString(4, brand);
+			stmt.setString(5, image_location);
+			stmt.setInt(6, id);
+			stmt.executeUpdate();
+		}catch (SQLException e){
+			System.out.println("ERROR: " + e.getMessage());
+		}
+	}
+	public Product[] get_all_products(){
+		ArrayList<Product> product_arr = new ArrayList<Product>();
+		try{
+			Statement stmt = conn.createStatement();
+			stmt.setQueryTimeout(5);
+			ResultSet results = stmt.executeQuery("SELECT * FROM Products");
+			while (results.next()){
+				product_arr.add(new Product(results.getInt("id"), results.getString("name"), results.getDouble("price"), results.getInt("rating"), results.getString("brand"), results.getString("image_location")));
+			}
+		}catch (SQLException e){
+			System.out.println("ERROR: " + e.getMessage());
+		}
+
+		return product_arr.toArray(new Product[]{});
 	}
 	public void disconnect(){
 		if (conn != null){

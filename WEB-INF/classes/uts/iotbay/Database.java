@@ -37,11 +37,15 @@ public class Database{
 			// Test data go here
 			stmt.executeUpdate("DROP TABLE IF EXISTS Products");
 			// The image_location has an implicit "web_pages/images/" put at the start of it
-			stmt.executeUpdate("CREATE TABLE Products (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL, price REAL NOT NULL, rating INTEGER NOT NULL, brand TEXT NOT NULL, image_location TEXT)");
+			// quantity = stock on hand
+			stmt.executeUpdate("CREATE TABLE Products (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL, price REAL NOT NULL, rating INTEGER NOT NULL, brand TEXT NOT NULL, quantity INTEGER NOT NULL, image_location TEXT)");
 			// More test data go here
-			stmt.executeUpdate("INSERT INTO Products VALUES(10001, 'IoT-Enabled Smart Light Bulb', 15.99, 4, 'Connect SmartHome', 'smart_light.jpg')");
-			stmt.executeUpdate("INSERT INTO Products VALUES(10002, 'WiFi Smart Camera', 139.49, 5, 'Arlo', 'smart_camera.png')");
-			stmt.executeUpdate("INSERT INTO Products VALUES(10003, 'Doorbell Security Camera Pro', 349.00, 3, 'Ring', 'ring_camera.png')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10001, 'IoT-Enabled Smart Light Bulb', 15.99, 4, 'Connect SmartHome', 500, 'smart_light.jpg')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10002, 'WiFi Smart Camera', 139.49, 5, 'Arlo', 250, 'smart_camera.png')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10003, 'Doorbell Security Camera Pro', 349.00, 3, 'Ring', 180, 'ring_camera.png')");
+			// Product Orders
+			stmt.executeUpdate("DROP TABLE IF EXISTS Orders");
+			stmt.executeUpdate("CREATE TABLE Orders (id INTEGER NOT NULL PRIMARY KEY, user_id INTEGER, item_ids TEXT)");
         } catch (Exception e){
             System.out.println("ERROR: " + e.getMessage());
         }
@@ -266,7 +270,7 @@ public class Database{
 
 		return log_arr.toArray(new UserLogEntry[]{});
 	}
-	public boolean add_product(String name, double price, int rating, String brand){
+	public boolean add_product(String name, double price, int rating, String brand, int quantity){
 		// The image location is set by default to a missing image, admin can change this later
 		if (name != null && name.trim().isEmpty()){
 			name = null;
@@ -275,12 +279,13 @@ public class Database{
 			brand = null;
 		}
 		try{
-			PreparedStatement stmt = conn.prepareStatement("INSERT INTO Products VALUES((?), (?), (?), (?), (?), NULL)");
+			PreparedStatement stmt = conn.prepareStatement("INSERT INTO Products VALUES((?), (?), (?), (?), (?), (?), NULL)");
 			stmt.setInt(1, create_id("Products"));
 			stmt.setString(2, name);
 			stmt.setDouble(3, price);
 			stmt.setInt(4, rating);
 			stmt.setString(5, brand);
+			stmt.setInt(6, quantity);
 			stmt.executeUpdate();
 			return true;
 		}catch (SQLException e){
@@ -300,6 +305,7 @@ public class Database{
 				db_product.set_price(results.getDouble("price"));
 				db_product.set_rating(results.getInt("rating"));
 				db_product.set_brand(results.getString("brand"));
+				db_product.set_quantity(results.getInt("quantity"));
 				db_product.set_image_location(results.getString("image_location"));
 			}
 		}catch (SQLException e){
@@ -316,7 +322,7 @@ public class Database{
 			System.out.println("ERROR: " + e.getMessage());
 		}
 	}
-	public void update_product(int id, String name, double price, int rating, String brand, String image_location){
+	public void update_product(int id, String name, double price, int rating, String brand, int quantity, String image_location){
 		if (name != null && name.trim().isEmpty()){
 			name = null;
 		}
@@ -327,13 +333,14 @@ public class Database{
 			image_location = null;
 		}
 		try{
-			PreparedStatement stmt = conn.prepareStatement("UPDATE Products SET name = (?), price = (?), rating = (?), brand = (?), image_location = (?) WHERE id = (?)");
+			PreparedStatement stmt = conn.prepareStatement("UPDATE Products SET name = (?), price = (?), rating = (?), brand = (?), quantity = (?), image_location = (?) WHERE id = (?)");
 			stmt.setString(1, name);
 			stmt.setDouble(2, price);
 			stmt.setInt(3, rating);
 			stmt.setString(4, brand);
-			stmt.setString(5, image_location);
-			stmt.setInt(6, id);
+			stmt.setInt(5, quantity);
+			stmt.setString(6, image_location);
+			stmt.setInt(7, id);
 			stmt.executeUpdate();
 		}catch (SQLException e){
 			System.out.println("ERROR: " + e.getMessage());
@@ -346,7 +353,7 @@ public class Database{
 			stmt.setQueryTimeout(5);
 			ResultSet results = stmt.executeQuery("SELECT * FROM Products");
 			while (results.next()){
-				product_arr.add(new Product(results.getInt("id"), results.getString("name"), results.getDouble("price"), results.getInt("rating"), results.getString("brand"), results.getString("image_location")));
+				product_arr.add(new Product(results.getInt("id"), results.getString("name"), results.getDouble("price"), results.getInt("rating"), results.getString("brand"), results.getInt("quantity"), results.getString("image_location")));
 			}
 		}catch (SQLException e){
 			System.out.println("ERROR: " + e.getMessage());

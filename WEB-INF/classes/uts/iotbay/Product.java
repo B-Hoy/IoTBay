@@ -6,15 +6,17 @@ public class Product {
     int rating;
     String brand;
     String image_location;
+    int quantity;
     public Product(){
     }
-    public Product(int id, String name, double price, int rating, String brand, String image_location){
+    public Product(int id, String name, double price, int rating, String brand, int quantity, String image_location){
         this.id = id;
         this.name = name;
         this.price = price;
         this.rating = rating;
         this.brand = brand;
         this.image_location = image_location;
+        this.quantity = quantity;
     }
     public int get_id(){
         return id;
@@ -51,5 +53,11 @@ public class Product {
     }
     public void set_image_location(String image_location) {
         this.image_location = image_location;
+    }
+    public int get_quantity() {
+        return quantity;
+    }
+    public void set_quantity(int quantity) {
+        this.quantity = quantity;
     }
 }

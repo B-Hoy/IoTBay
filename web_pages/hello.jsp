@@ -50,7 +50,7 @@ String form_name = request.getParameter("name");
 double form_price = 0.0;
 int form_rating = 0;
 int form_id = 0;
-
+int form_quantity = 0;
 // Need to convert from a string to double/int for these 3, as HTML forms submit everything as a string
 
 if (request.getParameter("id") != null){
@@ -61,6 +61,9 @@ if (request.getParameter("price") != null){ // if it is null (product form wasn'
 }
 if (request.getParameter("rating") != null){ // same for rating
 	form_rating = Integer.parseInt(request.getParameter("rating"));
+}
+if (request.getParameter("quantity") != null){
+	form_quantity = Integer.parseInt(request.getParameter("quantity"));
 }
 String form_brand = request.getParameter("brand");
 String form_image_location = request.getParameter("image_location");
@@ -94,10 +97,10 @@ if (form_type != null){ // if we got here through a form
 			}
 			break;
 		case "insert_product":
-			db.add_product(form_name, form_price, form_rating, form_brand);
+			db.add_product(form_name, form_price, form_rating, form_brand, form_quantity);
 			break;
 		case "update_product":
-			db.update_product(form_id, form_name, form_price, form_rating, form_brand, form_image_location);
+			db.update_product(form_id, form_name, form_price, form_rating, form_brand, form_quantity, form_image_location);
 			break;
 		case "delete_product":
 			db.delete_product(form_id);
@@ -208,9 +211,9 @@ You are not logged in.
 <% Product[] products = db.get_all_products(); %>
 <table class="user_table">
 	<thead><th colspan="10"><b>Product Table</b></th></thead>
-	<thead><th>Product ID</th><th>Product Name</th><th>Price</th><th>Rating</th><th>Brand</th><th>Image Location</th>
+	<thead><th>Product ID</th><th>Product Name</th><th>Price</th><th>Rating</th><th>Brand</th><th>Quantity</th><th>Image Location</th>
 	<% for (int i = 0; i < products.length; i++){%>
-	<tr><td><%=products[i].get_id()%></td><td><%=products[i].get_name()%></td><td><%=products[i].get_price()%></td><td><%=products[i].get_rating()%></td><td><%=products[i].get_brand()%></td><td><%=products[i].get_image_location()%></td>
+	<tr><td><%=products[i].get_id()%></td><td><%=products[i].get_name()%></td><td><%=products[i].get_price()%></td><td><%=products[i].get_rating()%></td><td><%=products[i].get_brand()%></td><td><%=products[i].get_quantity()%></td><td><%=products[i].get_image_location()%></td>
 	<%}%>
 </table>
 <br>
@@ -227,6 +230,8 @@ You are not logged in.
 		<input type="text" id="rating" name="rating"><br><br>
 		<label for="brand">Brand:</label><br>
 		<input type="text" id="brand" name="brand"><br><br>
+		<label for="quantity">Quantity:</label><br>
+		<input type="text" id="quantity" name="quantity"><br><br>
 		<input type="submit" value="Submit">
 	</form> 
 	</td>
@@ -243,6 +248,8 @@ You are not logged in.
 		<input type="text" id="rating" name="rating"><br><br>
 		<label for="brand">Brand:</label><br>
 		<input type="text" id="brand" name="brand"><br><br>
+		<label for="quantity">Quantity:</label><br>
+		<input type="text" id="quantity" name="quantity"><br><br>
 		<label for="image_location">Image Location:</label><br>
 		<input type="text" id="image_location" name="image_location"><br><br>
 		<input type="submit" value="Submit">

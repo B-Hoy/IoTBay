@@ -33,7 +33,15 @@ public class Database{
 
 			// This'll be used when the login/logout actions are set up
 			stmt.executeUpdate("DROP TABLE IF EXISTS User_Logins");
-			stmt.executeUpdate("CREATE TABLE User_Logins (session_id INTEGER NOT NULL PRIMARY KEY, email TEXT NOT NULL, login_date TEXT NOT NULL, logout_date TEXT)");
+			stmt.executeUpdate("CREATE TABLE User_Logins (id INTEGER NOT NULL PRIMARY KEY, email TEXT NOT NULL, login_date TEXT NOT NULL, logout_date TEXT)");
+			// Test data go here
+			stmt.executeUpdate("DROP TABLE IF EXISTS Products");
+			// The image_location has an implicit "web_pages/images/" put at the start of it
+			stmt.executeUpdate("CREATE TABLE Products (name TEXT NOT NULL, price REAL NOT NULL, rating INTEGER NOT NULL, brand TEXT NOT NULL, image_location TEXT NOT NULL)");
+			// More test data go here
+			stmt.executeUpdate("UPDATE TABLE Products VALUES('IoT-Enabled Smart Light Bulb', 15.99, 4, 'Connect SmartHome', 'smart_light.jpg')");
+			stmt.executeUpdate("UPDATE TABLE Products VALUES('WiFi Smart Camera', 139.49, 5, 'Arlo', 'smart_camera.png')");
+			stmt.executeUpdate("UPDATE TABLE Products VALUES('Doorbell Security Camera Pro', 349.00, 3, 'Ring', 'ring_camera.png')");
         } catch (Exception e){
             System.out.println("ERROR: " + e.getMessage());
         }
@@ -84,15 +92,9 @@ public class Database{
 			try{
 				PreparedStatement stmt;
 				random = ThreadLocalRandom.current().nextInt(10000, 99999 + 1);
-				switch (table){
-					case "User_Logins":
-						stmt = conn.prepareStatement("SELECT * FROM User_Logins WHERE session_id = (?)");
-						break;
-					case "Users":
-					default:
-						stmt = conn.prepareStatement("SELECT * FROM Users WHERE id = (?)");
-				}
-				stmt.setInt(1, random);
+				stmt = conn.prepareStatement("SELECT * FROM (?) WHERE id = (?)");
+				stmt.setString(1, table);
+				stmt.setInt(2, random);
 				results = stmt.executeQuery();
 				if (results.next()){
 					continue;
@@ -236,12 +238,12 @@ public class Database{
 	public UserLogEntry get_user_log(int session_id){
 		UserLogEntry log = new UserLogEntry();
 		try{
-			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM User_Logins WHERE session_id = (?)");
+			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM User_Logins WHERE id = (?)");
 			stmt.setInt(1, session_id);
 			ResultSet results = stmt.executeQuery();
 			while (results.next()){
 				log.set_email(results.getString("email"));
-				log.set_session_id(results.getInt("session_id"));
+				log.set_session_id(results.getInt("id"));
 				log.set_login_date(results.getString("login_date"));
 				log.set_logout_date(results.getString("logout_date"));
 			}
@@ -257,7 +259,7 @@ public class Database{
 			stmt.setQueryTimeout(5);
 			ResultSet results = stmt.executeQuery("SELECT * FROM User_Logins");
 			while (results.next()){
-				log_arr.add(new UserLogEntry(results.getInt("session_id"), results.getString("email"), results.getString("login_date"), results.getString("logout_date")));
+				log_arr.add(new UserLogEntry(results.getInt("id"), results.getString("email"), results.getString("login_date"), results.getString("logout_date")));
 			}
 		}catch (SQLException e){
 			System.out.println("ERROR: " + e.getMessage());

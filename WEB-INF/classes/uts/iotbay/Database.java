@@ -299,7 +299,7 @@ public class Database{
 	public Product get_product(int id){
 		Product db_product = new Product();
 		try{
-			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Products WHERE email = (?)");
+			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Products WHERE id = (?)");
 			stmt.setInt(1, id);
 			ResultSet results = stmt.executeQuery();
 			while (results.next()){
@@ -361,7 +361,6 @@ public class Database{
 		}catch (SQLException e){
 			System.out.println("ERROR: " + e.getMessage());
 		}
-
 		return product_arr.toArray(new Product[]{});
 	}
 	public void disconnect(){

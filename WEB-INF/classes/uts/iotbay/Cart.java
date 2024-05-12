@@ -6,16 +6,8 @@ public class Cart {
     // Order of product and amount is the same between these two
     // E.g. product_amounts[1] is the amount of the product specified at product_ids[1]
     public Cart(){
-    }
-    // item_ids provided in comma seperated <id>|<amount> format
-    public Cart(String items){
-        String[] temp = items.split(",");
-        String[] j;
-        for (String i : temp){
-            j = i.split("|");
-            product_ids.add(Integer.valueOf(j[0]));
-            product_amounts.add(Integer.valueOf(j[1]));
-        }
+        product_ids = new ArrayList<Integer>();
+        product_amounts = new ArrayList<Integer>();
     }
     // True if found and deleted, false if not found
     public boolean delete_product(int product_id){
@@ -32,8 +24,13 @@ public class Cart {
         product_amounts.clear();
     }
     public void add_product(int product_id, int amount){
-        product_ids.add(product_id);
-        product_amounts.add(amount);
+        int index = product_ids.indexOf(product_id);
+        if (index != -1){ // If product_id already exists in cart
+            product_amounts.set(index, amount + product_amounts.get(index));
+        }else{
+            product_ids.add(product_id);
+            product_amounts.add(amount);
+        }
     }
     public int get_product_amount(int product_id){
         int location = product_ids.indexOf(product_id);
@@ -42,11 +39,15 @@ public class Cart {
         }
         return product_amounts.get(location);
     }
-    public Integer[][] get_cart_inventory(){
-        // product_arr[0] = product_ids, product_arr[1] = product_amounts
-        Integer[][] product_arr = new Integer[2][product_ids.size()];
-        product_arr[0] = product_ids.toArray(product_arr[0]);
-        product_arr[1] = product_amounts.toArray(product_arr[1]);
-        return product_arr;
+    public Product[] get_cart_inventory(Database db){
+        ArrayList<Product> product_arr = new ArrayList<Product>();
+        Product temp = new Product();
+        for (int i = 0; i < product_ids.size(); i++){
+            temp = db.get_product(product_ids.get(i));
+            // Quantity in this context means amount in cart, not stock on hand
+            temp.set_quantity(product_amounts.get(i));
+            product_arr.add(temp);
+        }
+        return product_arr.toArray(new Product[]{});
     }
 }

@@ -2,6 +2,7 @@
 <%@page import="uts.iotbay.User"%>
 <%@page import="uts.iotbay.UserLogEntry"%>
 <%@page import="uts.iotbay.Product"%>
+<%@page import="uts.iotbay.Cart"%>
 <!-- ^^^ Include these to access JSP functions --> 
 <html>
 <head>
@@ -104,6 +105,26 @@ if (form_type != null){ // if we got here through a form
 			break;
 		case "delete_product":
 			db.delete_product(form_id);
+			break;
+		// Cart functions
+		case "delete_cart":
+			session.removeAttribute("cart");
+			break;
+		case "purge_cart":
+			if (session.getAttribute("cart") != null){
+				((Cart)session.getAttribute("cart")).purge_cart();
+			}
+			break;
+		case "remove_cart":
+			if (session.getAttribute("cart") != null){
+				((Cart)session.getAttribute("cart")).delete_product(form_id);
+			}
+			break;
+		case "insert_cart":
+			if (session.getAttribute("cart") == null){
+				session.setAttribute("cart", new Cart());
+			}
+			((Cart)session.getAttribute("cart")).add_product(form_id, form_quantity);
 			break;
 	}
 }
@@ -264,6 +285,55 @@ You are not logged in.
 	</form>
 	</td>
 	</tr>
-	</table>
+</table>
+<br>
+<%if (session.getAttribute("cart") == null){%>
+No cart found in cookies
+<%}else{
+	Product[] cart_products = ((Cart)session.getAttribute("cart")).get_cart_inventory(db);
+%>
+<table class="cart_table">
+	<thead><th colspan="10"><b>Cart Product Table</b></th></thead>
+	<thead><th>Product ID</th><th>Product Name</th><th>Price</th><th>Rating</th><th>Brand</th><th>Quantity</th><th>Image Location</th>
+	<% for (int i = 0; i < cart_products.length; i++){%>
+	<tr><td><%=cart_products[i].get_id()%></td><td><%=cart_products[i].get_name()%></td><td><%=cart_products[i].get_price()%></td><td><%=cart_products[i].get_rating()%></td><td><%=cart_products[i].get_brand()%></td><td><%=cart_products[i].get_quantity()%></td><td><%=cart_products[i].get_image_location()%></td>
+	<%}%>
+</table>
+<%}%>
+<br>
+<table class="cart_form_table">
+	<thead><th><b>Add product to cart:</b></th><th><b>Delete product from cart:</b></th><th><b>Purge cart items:</b></th><th><b>Remove cart from cookies:</b></th></thead>
+	<tr><td>
+	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+		<input type="hidden" id="form_type" name="form_type" value="insert_cart">
+		<label for="name">Product ID:</label><br>
+		<input type="text" id="id" name="id"><br>
+		<label for="quantity">Quantity:</label><br>
+		<input type="text" id="quantity" name="quantity"><br><br>
+		<input type="submit" value="Submit">
+	</form> 
+	</td>
+	<td>
+	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+		<input type="hidden" id="form_type" name="form_type" value="remove_cart">
+		<label for="id">Product ID:</label><br>
+		<input type="text" id="id" name="id"><br>
+		<input type="submit" value="Submit">
+	</form>
+	</td>
+	<td>
+	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+	<input type="hidden" id="form_type" name="form_type" value="purge_cart">
+	<input type="submit" value="Submit">
+	</form>
+	</td>
+	<td>
+	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+		<input type="hidden" id="form_type" name="form_type" value="delete_cart">
+		<input type="submit" value="Submit">
+	</form>
+	</td>
+	</tr>
+</table>
 </body>
 </html>

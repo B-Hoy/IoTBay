@@ -1,3 +1,6 @@
+<%@page import="uts.iotbay.Database"%>
+<%@page import="uts.iotbay.User"%>
+<%@page import="uts.iotbay.UserLogEntry"%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,6 +10,19 @@
     <title>Home | Ecommerce</title>
     <link rel="stylesheet" href="main.css">
 </head>
+
+<%
+// This check is *required* to use the db, otherwise data isn't fully persistent
+Database db = (Database)application.getAttribute("database"); 		// enter into every class
+if (db == null){
+	db = new Database();
+	application.setAttribute("database", db);
+	%>
+	Had to make a new db :(
+	<%
+}
+%>
+
 <body>
     <div class="topnav">
         <a class="active" href="#home">Home</a>

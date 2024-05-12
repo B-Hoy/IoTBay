@@ -31,6 +31,7 @@ String form_card_num = request.getParameter("card_num");
 String form_card_exp = request.getParameter("card_exp");
 String form_phone_num = request.getParameter("phone_num");
 
+
 String form_type = request.getParameter("form_type");
 if (form_type != null){ // if we got here through a form
 	%><%= form_type %><%
@@ -61,6 +62,7 @@ if (form_type != null){ // if we got here through a form
 	}
 }
 
+
 User[] users = db.get_all_users();
 if (session.getAttribute("session_id") == null){%>
 You are not logged in.
@@ -77,7 +79,7 @@ You are not logged in.
         <h1>Register</h1>
 
 
-        <form action="/iotbay/web_pages/hello.jsp" method="POST">          
+        <form action="/iotbay/web_pages/main.jsp" method="POST">          
             <input type="hidden" id="form_type" name="form_type" value="insert">
 
             <div class="account-info">
@@ -143,9 +145,16 @@ You are not logged in.
                 <input type="submit" value="Submit">
 
             </form>
+            <script>
+                document.getElementById("form_type").addEventListener("submit", function() {
+                    // Redirect to main.html
+                    window.location.href = "/iotbay/web_pages/main.html";
+                });
+            </script>
             
         </div>
     </div>
+    
 
 
 </body>

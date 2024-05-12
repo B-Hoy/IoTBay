@@ -45,7 +45,10 @@ public class Database{
 			stmt.executeUpdate("INSERT INTO Products VALUES(10003, 'Doorbell Security Camera Pro', 349.00, 3, 'Ring', 180, 'ring_camera.png')");
 			// Product Orders
 			stmt.executeUpdate("DROP TABLE IF EXISTS Orders");
-			stmt.executeUpdate("CREATE TABLE Orders (id INTEGER NOT NULL PRIMARY KEY, user_id INTEGER, item_ids TEXT)");
+			// Items is set up as comma-seperated, with each entry going <item id>|<amount
+			// Finalised just means whether or not the user has "signed off" on it, with true meaning it can't be edited
+			stmt.executeUpdate("CREATE TABLE Orders (id INTEGER NOT NULL PRIMARY KEY, user_id INTEGER, items TEXT, finalised INTEGER)");
+			stmt.executeUpdate("INSERT INTO Orders VALUES (20001, 12345, '10001|5,10002|50,10003|500', 0)");
         } catch (Exception e){
             System.out.println("ERROR: " + e.getMessage());
         }

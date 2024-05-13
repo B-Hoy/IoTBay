@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <h1>Login</h1>
-        <form id="loginForm" action="main.html" method="POST">
+        <form id="loginForm" action="#" method="POST">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required><br>
             <label for="password">Password:</label>
@@ -17,40 +17,40 @@
             <button type="submit">Login</button>
             <!-- Add error message for unfilled fields -->
             <p id="errorMessage" style="display: none;">Please fill in all fields.</p>
+            <p id="loginErrorMessage" style="display: none;">Incorrect email or password.</p>
         </form>
     </div>
 
     <script>
         document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent form submission
+
             var email = document.getElementById("email").value;
             var password = document.getElementById("password").value;
 
             if (!email || !password) {
                 document.getElementById("errorMessage").textContent = "Please fill in all fields.";
                 document.getElementById("errorMessage").style.display = "block";
-                event.preventDefault(); // Prevent form submission
                 return;
             }
 
-            // Call the handleLogin method from LoginService
-            var isAuthenticated = LoginService.handleLogin(email, password);
-
-            if (!isAuthenticated) {
-                document.getElementById("errorMessage").textContent = "Incorrect email or password.";
-                document.getElementById("errorMessage").style.display = "block";
-                event.preventDefault(); // Prevent form submission
-            }
+            // Send AJAX request to server-side script for authentication
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "login.jsp", true);
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        // Redirect to main page if authentication is successful
+                        window.location.href = "main.html";
+                    } else {
+                        // Display error message if authentication fails
+                        document.getElementById("loginErrorMessage").style.display = "block";
+                    }
+                }
+            };
+            xhr.send("email=" + email + "&password=" + password);
         });
-
-        // Mock LoginService.handleLogin function
-        var LoginService = {
-            handleLogin: function(email, password) {
-                // Mock authentication logic
-                var isAuthenticated = (email === "email@email.com" && password === "password");
-                
-                return isAuthenticated;
-            }
-        };
     </script>
 </body>
 </html>

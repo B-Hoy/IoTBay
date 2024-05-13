@@ -9,32 +9,48 @@
 <body>
     <div class="container">
         <h1>Login</h1>
-        <form id="loginForm" onsubmit="return validateForm()">
+        <form id="loginForm" action="main.html" method="POST">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required><br>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required><br>
-            <button type="submit" id="loginButton">Login</button>
+            <button type="submit">Login</button>
             <!-- Add error message for unfilled fields -->
-            <p id="errorMessage">Please fill in all fields.</p>
+            <p id="errorMessage" style="display: none;">Please fill in all fields.</p>
         </form>
     </div>
-    <!-- Add your JavaScript code here -->
+
     <script>
-        function validateForm() {
-        var email = document.getElementById("email").value;
-        var password = document.getElementById("password").value;
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            var email = document.getElementById("email").value;
+            var password = document.getElementById("password").value;
 
-        if (!email || !password) {
-            // Show error message for unfilled fields
-            document.getElementById("errorMessage").style.display = "block";
-            return false; // Prevent form submission
-        }
+            if (!email || !password) {
+                document.getElementById("errorMessage").textContent = "Please fill in all fields.";
+                document.getElementById("errorMessage").style.display = "block";
+                event.preventDefault(); // Prevent form submission
+                return;
+            }
 
-        // Redirect to main.html after successful form submission
-        window.location.href = "main.html";
-        return false; // Prevent default form submission
-        }
+            // Call the handleLogin method from LoginService
+            var isAuthenticated = LoginService.handleLogin(email, password);
+
+            if (!isAuthenticated) {
+                document.getElementById("errorMessage").textContent = "Incorrect email or password.";
+                document.getElementById("errorMessage").style.display = "block";
+                event.preventDefault(); // Prevent form submission
+            }
+        });
+
+        // Mock LoginService.handleLogin function
+        var LoginService = {
+            handleLogin: function(email, password) {
+                // Mock authentication logic
+                var isAuthenticated = (email === "email@email.com" && password === "password");
+                
+                return isAuthenticated;
+            }
+        };
     </script>
 </body>
 </html>

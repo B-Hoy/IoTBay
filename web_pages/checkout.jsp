@@ -12,6 +12,10 @@
     <link rel="stylesheet" href="checkout.css">
   </head>
 
+  <div class="topnav">
+    <a href="cart.jsp">Back to Cart</a>
+  </div>
+
   <body bgcolor=white>
   
     <% // This check is *required* to use the db, otherwise data isn't fully persistent 
@@ -45,7 +49,7 @@
         <h3>Shipping Information</h3>
         <label for="first_name">First Name:</label>
         <input type="text" id="first_name" name="first_name" value='<%=logged_in_user.get_first_name()  != null ? logged_in_user.get_first_name() : "" %>' required>
-        <label for="last_name">First Name:</label>
+        <label for="last_name">Last Name:</label>
         <input type="text" id="last_name" name="last_name" value='<%=logged_in_user.get_last_name()  != null ? logged_in_user.get_last_name() : "" %>'required>
         <label for="email">Email:</label>
         <input type="text" id="email" name="email" value='<%=logged_in_user.get_email()  != null ? logged_in_user.get_email() : "" %>' required>
@@ -70,23 +74,84 @@
         <input type="text" id="card_exp" name="card_exp" value='<%=logged_in_user.get_card_exp()  != null ? logged_in_user.get_card_exp() : "" %>' required>
         <label for="cvv">CVV:</label>
         <input type="text" id="cvv" name="cvv" required>
-    
-        <input type="checkbox" id="sameAddress">
+  
+        
+        <h3>Shipping Information</h3>
+
+        <input type="checkbox" id="sameAddress" onchange="copyShippingAddress()">
         <label for="sameAddress">Use same billing address for shipping</label>
+
+        <div style="margin-top: 10px;"></div>
+          <label for="billing_address">Address:</label>
+          <input type="text" id="billing_address" name="billing_address" required>
+          <label for="billing_city">City:</label>
+          <input type="text" id="billing_city" name="billing_city" required>
+          <label for="billing_country">Country:</label>
+          <input type="text" id="billing_country" name="billing_country" required>
+          <label for="billing_state">State:</label>
+          <input type="text" id="billing_state" name="billing_state" required>
+
+          <div style="margin-top: 10px;"></div>
+
+
     
-        <button type="submit">Complete Payment</button>
-      </form>
-    </div>
+          
+          <div id="successPopup" class="popup">
+            <div class="popup-content">
+                <span class="close">&times;</span>
+                <p>Your payment is successful!</p>
+                <p>Your order number is: <%= orderNumber %></p>
+                <button onclick="location.href='main.html'">Back to Main</button>
+            </div>
+          </div>
+
+          <button onclick="completePayment()">Complete Payment</button>
+
+          <script>
+            function completePayment() {
+                var requiredFields = document.querySelectorAll('input[required]');
+                var isValid = true;
+                requiredFields.forEach(function(field) {
+                    if (!field.value) {
+                        isValid = false;
+                    }
+                });
+
+                if (isValid) {
+                    showPopup();
+                } else {
+                    alert('Please fill out all required fields.');
+                }
+            }
+
+            document.getElementById("backToMainButton").addEventListener("click", function() {
+              document.getElementById("successPopup").style.display = "none";
+              window.location.href = "main.html";
+            });
+
+            function showPopup() {
+                document.getElementById('successPopup').style.display = 'block';
+            }
+          </script>
+
+      
     
-    
-    <div id="successPopup" class="popup">
-      <div class="popup-content">
-        <span class="close">&times;</span>
-        <p>Your payment is successful!</p>
-        <p>Your order number is: <%= orderNumber %>
-        </p>
-      </div>
-    </div>
+    <script>
+      function copyShippingAddress() {
+        if (document.getElementById("sameAddress").checked) {
+          document.getElementById("billing_address").value = document.getElementById("address").value;
+          document.getElementById("billing_city").value = document.getElementById("city").value;
+          document.getElementById("billing_country").value = document.getElementById("country").value;
+          document.getElementById("billing_state").value = document.getElementById("state").value;
+        } else {
+          document.getElementById("billing_address").value = "";
+          document.getElementById("billing_city").value = "";
+          document.getElementById("billing_country").value = "";
+          document.getElementById("billing_state").value = "";
+        }
+      }
+    </script>
+  
    
   </body>
 </html>

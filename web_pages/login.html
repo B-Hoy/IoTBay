@@ -9,32 +9,48 @@
 <body>
     <div class="container">
         <h1>Login</h1>
-        <form id="loginForm" onsubmit="return validateForm()">
+        <form id="loginForm" action="#" method="POST">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required><br>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required><br>
-            <button type="submit" id="loginButton">Login</button>
+            <button type="submit">Login</button>
             <!-- Add error message for unfilled fields -->
-            <p id="errorMessage">Please fill in all fields.</p>
+            <p id="errorMessage" style="display: none;">Please fill in all fields.</p>
+            <p id="loginErrorMessage" style="display: none;">Incorrect email or password.</p>
         </form>
     </div>
-    <!-- Add your JavaScript code here -->
+z
     <script>
-        function validateForm() {
-        var email = document.getElementById("email").value;
-        var password = document.getElementById("password").value;
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent form submission
 
-        if (!email || !password) {
-            // Show error message for unfilled fields
-            document.getElementById("errorMessage").style.display = "block";
-            return false; // Prevent form submission
-        }
+            var email = document.getElementById("email").value;
+            var password = document.getElementById("password").value;
 
-        // Redirect to main.html after successful form submission
-        window.location.href = "main.html";
-        return false; // Prevent default form submission
-        }
+            if (!email || !password) {
+                document.getElementById("errorMessage").textContent = "Please fill in all fields.";
+                document.getElementById("errorMessage").style.display = "block";
+                return;
+            }
+
+            // Send AJAX request to server-side script for authentication
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "login.jsp", true);
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        // Redirect to main page if authentication is successful
+                        window.location.href = "main.html";
+                    } else {
+                        // Display error message if authentication fails
+                        document.getElementById("loginErrorMessage").style.display = "block";
+                    }
+                }
+            };
+            xhr.send("email=" + email + "&password=" + password);
+        });
     </script>
 </body>
 </html>

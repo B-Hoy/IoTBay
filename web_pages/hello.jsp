@@ -1,6 +1,8 @@
 <%@page import="uts.iotbay.Database"%>
 <%@page import="uts.iotbay.User"%>
 <%@page import="uts.iotbay.UserLogEntry"%>
+<%@page import="uts.iotbay.Product"%>
+<!-- ^^^ Include these to access JSP functions --> 
 <html>
 <head>
 <title>JSP Database Testing</title>
@@ -28,6 +30,9 @@ if (db == null){
 	Had to make a new db :(
 	<%
 }
+// All lines above (23-30) need to be in every JSP page
+
+// \/ \/ \/ User Form Data
 
 String form_email = request.getParameter("email");
 String form_first_name = request.getParameter("first_name");
@@ -36,20 +41,45 @@ String form_password = request.getParameter("password");
 String form_card_num = request.getParameter("card_num");
 String form_card_exp = request.getParameter("card_exp");
 String form_phone_num = request.getParameter("phone_num");
+
+// ^^^ User form data
+
+// \/ \/ \/ Product Form Data
+
+String form_name = request.getParameter("name");
+double form_price = 0.0;
+int form_rating = 0;
+int form_id = 0;
+
+// Need to convert from a string to double/int for these 3, as HTML forms submit everything as a string
+
+if (request.getParameter("id") != null){
+	form_id = Integer.parseInt(request.getParameter("id"));
+}
+if (request.getParameter("price") != null){ // if it is null (product form wasn't the way we got to the page), big error
+	form_price = Double.parseDouble(request.getParameter("price"));
+}
+if (request.getParameter("rating") != null){ // same for rating
+	form_rating = Integer.parseInt(request.getParameter("rating"));
+}
+String form_brand = request.getParameter("brand");
+String form_image_location = request.getParameter("image_location");
+// ^^^ Product form data
+
 String form_type = request.getParameter("form_type");
 if (form_type != null){ // if we got here through a form
 	%><%= form_type %><%
 	switch (form_type){
-		case "insert":
+		case "insert_user":
 			db.create_user(form_email, form_first_name, form_last_name, form_password, false, form_card_num, form_card_exp, form_phone_num);
 			break;
-		case "update":
+		case "update_user":
 			db.update_user(form_email, form_first_name, form_last_name, form_password, form_card_num, form_card_exp, form_phone_num);
 			break;
-		case "delete":
+		case "delete_user":
 			db.delete_user(form_email);
 			break;
-		case "login":
+		case "login_user":
 			int local_session_id = db.add_user_login(form_email);
 			if (local_session_id != -1){
 				session.setAttribute("session_id", local_session_id);
@@ -57,11 +87,20 @@ if (form_type != null){ // if we got here through a form
 				// Login failed, reload the page or throw a popup or something
 			}
 			break;
-		case "logout":
+		case "logout_user":
 			if (session.getAttribute("session_id") != null){ // just to make sure the user is actually logged in
 				db.set_user_logout((int)session.getAttribute("session_id"));
 				session.removeAttribute("session_id");
 			}
+			break;
+		case "insert_product":
+			db.add_product(form_name, form_price, form_rating, form_brand);
+			break;
+		case "update_product":
+			db.update_product(form_id, form_name, form_price, form_rating, form_brand, form_image_location);
+			break;
+		case "delete_product":
+			db.delete_product(form_id);
 			break;
 	}
 }
@@ -89,7 +128,7 @@ You are not logged in.
 <thead><th><b>Make a new user:</b></th><th><b>Update User Details:</b></th><th><b>Delete User:</b> </th></thead>
 <tr><td>
 <form action="/iotbay/web_pages/hello.jsp" method="POST">
-	<input type="hidden" id="form_type" name="form_type" value="insert">
+	<input type="hidden" id="form_type" name="form_type" value="insert_user">
 	<label for="email">Email:</label><br>
 	<input type="text" id="email" name="email"><br>
 	<label for="first_name">First name:</label><br>
@@ -109,7 +148,7 @@ You are not logged in.
 </td>
 <td>
 <form action="/iotbay/web_pages/hello.jsp" method="POST">
-	<input type="hidden" id="form_type" name="form_type" value="update">
+	<input type="hidden" id="form_type" name="form_type" value="update_user">
 	<label for="email">Email:</label><br>
 	<input type="text" id="email" name="email"><br>
 	<label for="first_name">First name:</label><br>
@@ -129,7 +168,7 @@ You are not logged in.
 </td>
 <td>
 <form action="/iotbay/web_pages/hello.jsp" method="POST">
-	<input type="hidden" id="form_type" name="form_type" value="delete">
+	<input type="hidden" id="form_type" name="form_type" value="delete_user">
 	<label for="email">Email:</label><br>
 	<input type="text" id="email" name="email"><br>
 	<input type="submit" value="Submit">
@@ -151,7 +190,7 @@ You are not logged in.
 	<tr>
 		<td>
 		<form action="/iotbay/web_pages/hello.jsp" method="POST">
-			<input type="hidden" id="form_type" name="form_type" value="login">
+			<input type="hidden" id="form_type" name="form_type" value="login_user">
 			<label for="email">Email:</label><br>
 			<input type="text" id="email" name="email"><br>
 			<input type="submit" value="Login">
@@ -159,11 +198,65 @@ You are not logged in.
 		</td>
 		<td>
 			<form action="/iotbay/web_pages/hello.jsp" method="POST">
-				<input type="hidden" id="form_type" name="form_type" value="logout">
+				<input type="hidden" id="form_type" name="form_type" value="logout_user">
 				<input type="submit" value="Logout">
 			</form>
 		</td>
 	</tr>
 </table>
+<br>
+<% Product[] products = db.get_all_products(); %>
+<table class="user_table">
+	<thead><th colspan="10"><b>Product Table</b></th></thead>
+	<thead><th>Product ID</th><th>Product Name</th><th>Price</th><th>Rating</th><th>Brand</th><th>Image Location</th>
+	<% for (int i = 0; i < products.length; i++){%>
+	<tr><td><%=products[i].get_id()%></td><td><%=products[i].get_name()%></td><td><%=products[i].get_price()%></td><td><%=products[i].get_rating()%></td><td><%=products[i].get_brand()%></td><td><%=products[i].get_image_location()%></td>
+	<%}%>
+</table>
+<br>
+<table class="product_table">
+	<thead><th><b>Make a new product:</b></th><th><b>Update Product Details:</b></th><th><b>Delete Product:</b></th></thead>
+	<tr><td>
+	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+		<input type="hidden" id="form_type" name="form_type" value="insert_product">
+		<label for="name">Name:</label><br>
+		<input type="text" id="name" name="name"><br>
+		<label for="price">Price:</label><br>
+		<input type="text" id="price" name="price"><br>
+		<label for="rating">Rating:</label><br>
+		<input type="text" id="rating" name="rating"><br><br>
+		<label for="brand">Brand:</label><br>
+		<input type="text" id="brand" name="brand"><br><br>
+		<input type="submit" value="Submit">
+	</form> 
+	</td>
+	<td>
+	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+		<input type="hidden" id="form_type" name="form_type" value="update_product">
+		<label for="id">Product ID:</label><br>
+		<input type="text" id="id" name="id"><br>
+		<label for="name">Name:</label><br>
+		<input type="text" id="name" name="name"><br>
+		<label for="price">Price:</label><br>
+		<input type="text" id="price" name="price"><br>
+		<label for="rating">Rating:</label><br>
+		<input type="text" id="rating" name="rating"><br><br>
+		<label for="brand">Brand:</label><br>
+		<input type="text" id="brand" name="brand"><br><br>
+		<label for="image_location">Image Location:</label><br>
+		<input type="text" id="image_location" name="image_location"><br><br>
+		<input type="submit" value="Submit">
+	</form>
+	</td>
+	<td>
+	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+		<input type="hidden" id="form_type" name="form_type" value="delete_product">
+		<label for="id">Product ID:</label><br>
+		<input type="text" id="id" name="id"><br>
+		<input type="submit" value="Submit">
+	</form>
+	</td>
+	</tr>
+	</table>
 </body>
 </html>

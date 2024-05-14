@@ -3,6 +3,7 @@
 <%@page import="uts.iotbay.UserLogEntry"%>
 <%@page import="uts.iotbay.Product"%>
 <%@page import="uts.iotbay.Cart"%>
+<%@page import="uts.iotbay.Order"%>
 <!-- ^^^ Include these to access JSP functions --> 
 <html>
 <head>
@@ -23,7 +24,7 @@ This is the output of a JSP page that is supposed to connect to a SQLite databas
 </table>
 <%
 // This check is *required* to use the db, otherwise data isn't fully persistent
-Database db = (Database)application.getAttribute("database");
+Database db = (Database)application.getAttribute("database"); 		// enter into every class
 if (db == null){
 	db = new Database();
 	application.setAttribute("database", db);
@@ -51,11 +52,15 @@ String form_name = request.getParameter("name");
 double form_price = 0.0;
 int form_rating = 0;
 int form_id = 0;
+int form_id2 = 0;
 int form_quantity = 0;
 // Need to convert from a string to double/int for these 3, as HTML forms submit everything as a string
 
 if (request.getParameter("id") != null){
 	form_id = Integer.parseInt(request.getParameter("id"));
+}
+if (request.getParameter("id2") != null){
+	form_id2 = Integer.parseInt(request.getParameter("id2"));
 }
 if (request.getParameter("price") != null){ // if it is null (product form wasn't the way we got to the page), big error
 	form_price = Double.parseDouble(request.getParameter("price"));
@@ -84,7 +89,7 @@ if (form_type != null){ // if we got here through a form
 			db.delete_user(form_email);
 			break;
 		case "login_user":
-			int local_session_id = db.add_user_login(form_email);
+			int local_session_id = db.add_user_login(form_email, form_password);
 			if (local_session_id != -1){
 				session.setAttribute("session_id", local_session_id);
 			}else{
@@ -125,6 +130,20 @@ if (form_type != null){ // if we got here through a form
 				session.setAttribute("cart", new Cart());
 			}
 			((Cart)session.getAttribute("cart")).add_product(form_id, form_quantity);
+			break;
+		case "create_order":
+			if (session.getAttribute("cart") != null){ // No cart, no order
+				db.create_order((Cart)session.getAttribute("cart"), (Integer)session.getAttribute("session_id"));
+			}
+			break;
+		case "delete_order":
+			db.delete_order(form_id);
+			break;
+		case "insert_order":
+			db.insert_item_order(form_id, form_id2, form_quantity);
+			break;
+		case "remove_order":
+			db.remove_item_order(form_id, form_id2);
 			break;
 	}
 }
@@ -217,6 +236,8 @@ You are not logged in.
 			<input type="hidden" id="form_type" name="form_type" value="login_user">
 			<label for="email">Email:</label><br>
 			<input type="text" id="email" name="email"><br>
+			<label for="password">Password:</label><br>
+			<input type="text" id="password" name="password"><br>
 			<input type="submit" value="Login">
 		</form>
 		</td>
@@ -330,6 +351,67 @@ No cart found in cookies
 	<td>
 	<form action="/iotbay/web_pages/hello.jsp" method="POST">
 		<input type="hidden" id="form_type" name="form_type" value="delete_cart">
+		<input type="submit" value="Submit">
+	</form>
+	</td>
+	</tr>
+</table>
+<br>
+<% Order[] orders = db.get_all_orders(); %>
+<table class="order_table">
+	<thead><th colspan="10"><b>Order Table</b></th></thead>
+	<thead><th>Order ID</th><th>Owner User ID</th><th>Finalised</th><th>Payment ID</th><th>Date/Time Created</th><th>Order Items</th>
+	<% for (int i = 0; i < orders.length; i++){
+		Product[] order_products = orders[i].get_items();
+	%>
+	<tr><td><%=orders[i].get_id()%></td><td><%=orders[i].get_owner_email()%></td><td><%=orders[i].get_finalised()%></td><td><%=orders[i].get_payment_id()%></td><td><%=orders[i].get_date_created()%></td>
+	<td>
+	<table class="order_item_table">
+		<thead><th>Product ID</th><th>Product Name</th><th>Price</th><th>Rating</th><th>Brand</th><th>Quantity</th><th>Image Location</th>
+		<% for (int j = 0; j < order_products.length; j++){%>
+		<tr><td><%=order_products[j].get_id()%></td><td><%=order_products[j].get_name()%></td><td><%=order_products[j].get_price()%></td><td><%=order_products[j].get_rating()%></td><td><%=order_products[j].get_brand()%></td><td><%=order_products[j].get_quantity()%></td><td><%=order_products[j].get_image_location()%></td>
+		<%}%>
+		</table>
+	</td>
+	</tr>
+	<%}%>
+</table>
+<br>
+<table class="order_func_table">
+	<thead><th><b>Create order from cart:</b></th><th><b>Delete order:</b></th><th><b>Delete item from order:</b></th><th><b>Insert item into order:</b></th></thead>
+	<tr><td>
+	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+		<input type="hidden" id="form_type" name="form_type" value="create_order">
+		<input type="submit" value="Submit">
+	</form> 
+	</td>
+	<td>
+	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+		<input type="hidden" id="form_type" name="form_type" value="delete_order">
+		<label for="id">Order ID:</label><br>
+		<input type="text" id="id" name="id"><br>
+		<input type="submit" value="Submit">
+	</form>
+	</td>
+	<td>
+	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+	<input type="hidden" id="form_type" name="form_type" value="remove_order">
+		<label for="id">Order ID:</label><br>
+		<input type="text" id="id" name="id"><br>
+		<label for="id2">Product ID:</label><br>
+		<input type="text" id="id2" name="id2"><br>
+	<input type="submit" value="Submit">
+	</form>
+	</td>
+	<td>
+	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+		<input type="hidden" id="form_type" name="form_type" value="insert_order">
+		<label for="id">Order ID:</label><br>
+		<input type="text" id="id" name="id"><br>
+		<label for="id2">Product ID:</label><br>
+		<input type="text" id="id2" name="id2"><br>
+		<label for="quantity">Quantity:</label><br>
+		<input type="text" id="quantity" name="quantity"><br><br>
 		<input type="submit" value="Submit">
 	</form>
 	</td>

@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <h1>Login</h1>
-        <form id="loginForm" action="main.html" method="POST">
+        <form id="loginForm" action="main.jsp" method="POST">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required><br>
             <label for="password">Password:</label>
@@ -54,7 +54,7 @@
             // Check if there's a session ID set
             // If yes, redirect to main.html
             if (localStorage.getItem("session_id")) {
-                window.location.href = "main.html";
+                window.location.href = "main.jsp";
             }
         }
 

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="uts.iotbay.LoginService"%>
 <%@ page import="javax.servlet.http.HttpServletResponse"%>
+<%@ page import="java.io.*"%>
 
 <%
     String email = request.getParameter("email");
@@ -13,8 +14,10 @@
     }
 
     if (isAuthenticated) {
-        response.setStatus(HttpServletResponse.SC_OK);
+        // Redirect to main.html if authentication is successful
+        response.sendRedirect("main.html");
     } else {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        // Display error message if authentication fails
+        out.println("<p>Incorrect email or password.</p>");
     }
 %>

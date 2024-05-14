@@ -2,6 +2,7 @@
 <%@page import="uts.iotbay.User"%>
 <%@page import="uts.iotbay.UserLogEntry"%>
 <%@page import="uts.iotbay.Product"%>
+<%@page import="uts.iotbay.Cart"%>
 <!-- ^^^ Include these to access JSP functions --> 
 <html>
 <head>
@@ -50,7 +51,7 @@ String form_name = request.getParameter("name");
 double form_price = 0.0;
 int form_rating = 0;
 int form_id = 0;
-
+int form_quantity = 0;
 // Need to convert from a string to double/int for these 3, as HTML forms submit everything as a string
 
 if (request.getParameter("id") != null){
@@ -61,6 +62,9 @@ if (request.getParameter("price") != null){ // if it is null (product form wasn'
 }
 if (request.getParameter("rating") != null){ // same for rating
 	form_rating = Integer.parseInt(request.getParameter("rating"));
+}
+if (request.getParameter("quantity") != null){
+	form_quantity = Integer.parseInt(request.getParameter("quantity"));
 }
 String form_brand = request.getParameter("brand");
 String form_image_location = request.getParameter("image_location");
@@ -94,13 +98,33 @@ if (form_type != null){ // if we got here through a form
 			}
 			break;
 		case "insert_product":
-			db.add_product(form_name, form_price, form_rating, form_brand);
+			db.add_product(form_name, form_price, form_rating, form_brand, form_quantity);
 			break;
 		case "update_product":
-			db.update_product(form_id, form_name, form_price, form_rating, form_brand, form_image_location);
+			db.update_product(form_id, form_name, form_price, form_rating, form_brand, form_quantity, form_image_location);
 			break;
 		case "delete_product":
 			db.delete_product(form_id);
+			break;
+		// Cart functions
+		case "delete_cart":
+			session.removeAttribute("cart");
+			break;
+		case "purge_cart":
+			if (session.getAttribute("cart") != null){
+				((Cart)session.getAttribute("cart")).purge_cart();
+			}
+			break;
+		case "remove_cart":
+			if (session.getAttribute("cart") != null){
+				((Cart)session.getAttribute("cart")).delete_product(form_id);
+			}
+			break;
+		case "insert_cart":
+			if (session.getAttribute("cart") == null){
+				session.setAttribute("cart", new Cart());
+			}
+			((Cart)session.getAttribute("cart")).add_product(form_id, form_quantity);
 			break;
 	}
 }
@@ -208,9 +232,9 @@ You are not logged in.
 <% Product[] products = db.get_all_products(); %>
 <table class="user_table">
 	<thead><th colspan="10"><b>Product Table</b></th></thead>
-	<thead><th>Product ID</th><th>Product Name</th><th>Price</th><th>Rating</th><th>Brand</th><th>Image Location</th>
+	<thead><th>Product ID</th><th>Product Name</th><th>Price</th><th>Rating</th><th>Brand</th><th>Quantity</th><th>Image Location</th>
 	<% for (int i = 0; i < products.length; i++){%>
-	<tr><td><%=products[i].get_id()%></td><td><%=products[i].get_name()%></td><td><%=products[i].get_price()%></td><td><%=products[i].get_rating()%></td><td><%=products[i].get_brand()%></td><td><%=products[i].get_image_location()%></td>
+	<tr><td><%=products[i].get_id()%></td><td><%=products[i].get_name()%></td><td><%=products[i].get_price()%></td><td><%=products[i].get_rating()%></td><td><%=products[i].get_brand()%></td><td><%=products[i].get_quantity()%></td><td><%=products[i].get_image_location()%></td>
 	<%}%>
 </table>
 <br>
@@ -227,6 +251,8 @@ You are not logged in.
 		<input type="text" id="rating" name="rating"><br><br>
 		<label for="brand">Brand:</label><br>
 		<input type="text" id="brand" name="brand"><br><br>
+		<label for="quantity">Quantity:</label><br>
+		<input type="text" id="quantity" name="quantity"><br><br>
 		<input type="submit" value="Submit">
 	</form> 
 	</td>
@@ -243,6 +269,8 @@ You are not logged in.
 		<input type="text" id="rating" name="rating"><br><br>
 		<label for="brand">Brand:</label><br>
 		<input type="text" id="brand" name="brand"><br><br>
+		<label for="quantity">Quantity:</label><br>
+		<input type="text" id="quantity" name="quantity"><br><br>
 		<label for="image_location">Image Location:</label><br>
 		<input type="text" id="image_location" name="image_location"><br><br>
 		<input type="submit" value="Submit">
@@ -257,6 +285,55 @@ You are not logged in.
 	</form>
 	</td>
 	</tr>
-	</table>
+</table>
+<br>
+<%if (session.getAttribute("cart") == null){%>
+No cart found in cookies
+<%}else{
+	Product[] cart_products = ((Cart)session.getAttribute("cart")).get_cart_inventory(db);
+%>
+<table class="cart_table">
+	<thead><th colspan="10"><b>Cart Product Table</b></th></thead>
+	<thead><th>Product ID</th><th>Product Name</th><th>Price</th><th>Rating</th><th>Brand</th><th>Quantity</th><th>Image Location</th>
+	<% for (int i = 0; i < cart_products.length; i++){%>
+	<tr><td><%=cart_products[i].get_id()%></td><td><%=cart_products[i].get_name()%></td><td><%=cart_products[i].get_price()%></td><td><%=cart_products[i].get_rating()%></td><td><%=cart_products[i].get_brand()%></td><td><%=cart_products[i].get_quantity()%></td><td><%=cart_products[i].get_image_location()%></td>
+	<%}%>
+</table>
+<%}%>
+<br>
+<table class="cart_form_table">
+	<thead><th><b>Add product to cart:</b></th><th><b>Delete product from cart:</b></th><th><b>Purge cart items:</b></th><th><b>Remove cart from cookies:</b></th></thead>
+	<tr><td>
+	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+		<input type="hidden" id="form_type" name="form_type" value="insert_cart">
+		<label for="name">Product ID:</label><br>
+		<input type="text" id="id" name="id"><br>
+		<label for="quantity">Quantity:</label><br>
+		<input type="text" id="quantity" name="quantity"><br><br>
+		<input type="submit" value="Submit">
+	</form> 
+	</td>
+	<td>
+	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+		<input type="hidden" id="form_type" name="form_type" value="remove_cart">
+		<label for="id">Product ID:</label><br>
+		<input type="text" id="id" name="id"><br>
+		<input type="submit" value="Submit">
+	</form>
+	</td>
+	<td>
+	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+	<input type="hidden" id="form_type" name="form_type" value="purge_cart">
+	<input type="submit" value="Submit">
+	</form>
+	</td>
+	<td>
+	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+		<input type="hidden" id="form_type" name="form_type" value="delete_cart">
+		<input type="submit" value="Submit">
+	</form>
+	</td>
+	</tr>
+</table>
 </body>
 </html>

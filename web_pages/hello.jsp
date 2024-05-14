@@ -24,7 +24,7 @@ This is the output of a JSP page that is supposed to connect to a SQLite databas
 </table>
 <%
 // This check is *required* to use the db, otherwise data isn't fully persistent
-Database db = (Database)application.getAttribute("database");
+Database db = (Database)application.getAttribute("database"); 		// enter into every class
 if (db == null){
 	db = new Database();
 	application.setAttribute("database", db);

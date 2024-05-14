@@ -112,10 +112,10 @@
                 if (isValid) {
                   var orderNumber = Math.floor(Math.random() * 1000000) + 1;
         
-                  document.getElementById("paymentForm").classList.add("hidden");
-                  document.getElementById("paymentSuccess").classList.remove("hidden");
+                document.getElementById("paymentForm").classList.add("hidden");
+                document.getElementById("paymentSuccess").classList.remove("hidden");
 
-                  document.getElementById("orderNumber").textContent = orderNumber;
+                document.getElementById("orderNumber").textContent = orderNumber;
                 } else {
                     alert('Please fill out all required fields.');
                 }

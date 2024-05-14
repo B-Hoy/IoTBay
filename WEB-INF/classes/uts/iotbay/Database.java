@@ -515,6 +515,21 @@ public class Database{
 			System.out.println("ERROR: " + e.getMessage());
 		}
 	}
+	public Product[] search_for_product(String search){
+		ArrayList<Product> prod_arr = new ArrayList<Product>();
+		try{
+			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Products WHERE name LIKE (?)");
+			stmt.setString(1, "%" + search + "%");
+			ResultSet results = stmt.executeQuery();
+			while (results.next()){
+				prod_arr.add(new Product(results.getInt("id"), results.getString("name"), results.getDouble("price"), results.getInt("rating"), results.getString("brand"), results.getInt("quantity"), results.getString("image_location")));
+			}
+		}
+		catch (SQLException e){
+			System.out.println("ERROR: " + e.getMessage());
+		}
+		return prod_arr.toArray(new Product[]{});
+	}
 	public void disconnect(){
 		if (conn != null){
 			try{

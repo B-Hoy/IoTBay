@@ -1,12 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@page import="uts.iotbay.Database"%>
-<%@page import="uts.iotbay.User"%>
-<%@page import="uts.iotbay.UserLogEntry"%>
-<%@page import="uts.iotbay.Product"%>
-<%@page import="java.util.HashMap"%>
-<%@page import="java.util.Map"%>
-<!-- ^^^ Include these to access JSP functions --> 
-<%@page import="your.package.name.LoginService"%> <!-- Import the LoginService class -->
+<%@ page import="uts.iotbay.LoginService"%>
+<%@ page import="javax.servlet.http.HttpServletResponse"%>
 
 <html>
 <head>
@@ -29,46 +23,23 @@ This is the output of a JSP page that is supposed to connect to a SQLite databas
 
 =======
 <%
-// This check is *required* to use the db, otherwise data isn't fully persistent
-Database db = (Database)application.getAttribute("database");
-if (db == null){
-    db = new Database();
-    application.setAttribute("database", db);
-    %>
-    Had to make a new db :(
-    <%
-}
+    // Get the email and password parameters from the request
+    String email = request.getParameter("email");
+    String password = request.getParameter("password");
+    boolean isAuthenticated = false;
 
-// All lines above (23-30) need to be in every JSP page
+    // Check if email and password are not null
+    if (email != null && password != null) {
+        // Create an instance of the LoginService class
+        LoginService loginService = new LoginService();
+        // Authenticate the user
+        isAuthenticated = loginService.handleLogin(email, password);
+    }
 
-// \/ \/ \/ User Form Data
-
-String form_email = request.getParameter("email");
-String form_password = request.getParameter("password");
-
-// ^^^ User form data
-
-String form_type = request.getParameter("form_type");
-if (form_type != null){ // if we got here through a form
-    %><%= form_type %><%
-    switch (form_type){
-        case "insert_user":
-            // Code for user insertion
-            break;
-        case "update_user":
-            // Code for user update
-            break;
-        case "delete_user":
-            // Code for user deletion
-            break;
-        case "login_user":
-            LoginService loginService = new LoginService();
-            boolean isAuthenticated = loginService.handleLogin(form_email, form_password);
-            if (isAuthenticated) {
-                // Authentication successful, set session attribute
-                session.setAttribute("userEmail", form_email);
-                response.setStatus(200); // Success status code
-            } else {
+    // Set the response status based on the authentication result
+    if (isAuthenticated) {
+        response.setStatus(HttpServletResponse.SC_OK);
+    } else {
                 // Authentication failed, send appropriate response
                 response.setStatus(401); // Unauthorized status code
             }

@@ -40,10 +40,7 @@
     // gets the email of the currently logged in user, email gets used as an argument to pull the full user's data from the db
     %>
 
-    <% int orderNumber=new Random().nextInt(1000000000); %>
-
-
-
+  
     <div class="container">
       <form id="paymentForm" action="checkout.jsp" method="post">
         <h3>Shipping Information</h3>
@@ -104,12 +101,26 @@
     </div>
         <script>
           function completePayment() {
-            var orderNumber = Math.floor(Math.random() * 1000000) + 1;
-        
-            document.getElementById("paymentForm").classList.add("hidden");
-            document.getElementById("paymentSuccess").classList.remove("hidden");
 
-            document.getElementById("orderNumber").textContent = orderNumber;
+            var requiredFields = document.querySelectorAll('input[required]');
+                var isValid = true;
+                requiredFields.forEach(function(field) {
+                    if (!field.value) {
+                        isValid = false;
+                    }
+                });
+                if (isValid) {
+                  var orderNumber = Math.floor(Math.random() * 1000000) + 1;
+        
+                  document.getElementById("paymentForm").classList.add("hidden");
+                  document.getElementById("paymentSuccess").classList.remove("hidden");
+
+                  document.getElementById("orderNumber").textContent = orderNumber;
+                } else {
+                    alert('Please fill out all required fields.');
+                }
+
+    
           }
         
           function returnToHomePage() {

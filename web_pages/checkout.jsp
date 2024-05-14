@@ -45,7 +45,7 @@
 
 
     <div class="container">
-      <form action="checkout.jsp" method="post">
+      <form id="paymentForm" action="checkout.jsp" method="post">
         <h3>Shipping Information</h3>
         <label for="first_name">First Name:</label>
         <input type="text" id="first_name" name="first_name" value='<%=logged_in_user.get_first_name()  != null ? logged_in_user.get_first_name() : "" %>' required>
@@ -82,60 +82,42 @@
         <label for="sameAddress">Use same billing address for shipping</label>
 
         <div style="margin-top: 10px;"></div>
-          <label for="billing_address">Address:</label>
-          <input type="text" id="billing_address" name="billing_address" required>
-          <label for="billing_city">City:</label>
-          <input type="text" id="billing_city" name="billing_city" required>
-          <label for="billing_country">Country:</label>
-          <input type="text" id="billing_country" name="billing_country" required>
-          <label for="billing_state">State:</label>
-          <input type="text" id="billing_state" name="billing_state" required>
+        <label for="billing_address">Address:</label>
+        <input type="text" id="billing_address" name="billing_address" required>
+        <label for="billing_city">City:</label>
+        <input type="text" id="billing_city" name="billing_city" required>
+        <label for="billing_country">Country:</label>
+        <input type="text" id="billing_country" name="billing_country" required>
+        <label for="billing_state">State:</label>
+        <input type="text" id="billing_state" name="billing_state" required>
+        
+        <div style="margin-top: 10px;"></div>
+        <button type="button" onclick="completePayment()">Complete Payment</button>
 
-          <div style="margin-top: 10px;"></div>
+      </form>
+
+      <div id="paymentSuccess" class="hidden">
+        <h2>Your payment was successful!</h2>
+        <p>Order Number: <span id="orderNumber"></span></p>
+         <button onclick="returnToHomePage()">Return to Home Page</button>
+      </div>
+    </div>
+        <script>
+          function completePayment() {
+            var orderNumber = Math.floor(Math.random() * 1000000) + 1;
+        
+            document.getElementById("paymentForm").classList.add("hidden");
+            document.getElementById("paymentSuccess").classList.remove("hidden");
+
+            document.getElementById("orderNumber").textContent = orderNumber;
+          }
+        
+          function returnToHomePage() {
+            window.location.href = 'main.html';
+          }
+        </script>
 
 
-    
-          
-          <div id="successPopup" class="popup">
-            <div class="popup-content">
-                <span class="close">&times;</span>
-                <p>Your payment is successful!</p>
-                <p>Your order number is: <%= orderNumber %></p>
-                <button onclick="location.href='main.html'">Back to Main</button>
-            </div>
-          </div>
-
-          <button onclick="completePayment()">Complete Payment</button>
-
-          <script>
-            function completePayment() {
-                var requiredFields = document.querySelectorAll('input[required]');
-                var isValid = true;
-                requiredFields.forEach(function(field) {
-                    if (!field.value) {
-                        isValid = false;
-                    }
-                });
-
-                if (isValid) {
-                    showPopup();
-                } else {
-                    alert('Please fill out all required fields.');
-                }
-            }
-
-            document.getElementById("backToMainButton").addEventListener("click", function() {
-              document.getElementById("successPopup").style.display = "none";
-              window.location.href = "main.html";
-            });
-
-            function showPopup() {
-                document.getElementById('successPopup').style.display = 'block';
-            }
-          </script>
-
-      
-    
     <script>
       function copyShippingAddress() {
         if (document.getElementById("sameAddress").checked) {

@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <h1>Login</h1>
-        <form id="loginForm" action="LoginService" method="POST">
+        <form id="loginForm" action="main.html" method="POST">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required><br>
             <label for="password">Password:</label>
@@ -21,31 +21,45 @@
     </div>
     <script>
         document.getElementById("loginForm").addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent form submission
-
             var email = document.getElementById("email").value;
             var password = document.getElementById("password").value;
 
             if (!email || !password) {
                 document.getElementById("errorMessage").textContent = "Please fill in all fields.";
                 document.getElementById("errorMessage").style.display = "block";
-                return;
+                event.preventDefault();
             }
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "LoginService", true); // LoginService endpoint for authentication
-            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        window.location.href = "main.html"; // Redirect on success
-                    } else {
-                        document.getElementById("loginErrorMessage").style.display = "block"; // Show error on failure
-                    }
-                }
-            };
-            xhr.send("email=" + email + "&password=" + password);
         });
+
+        // Function to handle form submission
+        function submitForm() {
+            var email = document.getElementById("email").value;
+            var password = document.getElementById("password").value;
+
+            // Make sure both email and password are provided
+            if (email && password) {
+                // If all fields are filled, submit the form
+                // and let login.jsp handle the authentication
+                return true;
+            } else {
+                // Display error message if any field is missing
+                document.getElementById("errorMessage").textContent = "Please fill in all fields.";
+                document.getElementById("errorMessage").style.display = "block";
+                return false; // Prevent form submission
+            }
+        }
+
+        // Function to redirect user after successful login
+        function redirectIfLoggedIn() {
+            // Check if there's a session ID set
+            // If yes, redirect to main.html
+            if (localStorage.getItem("session_id")) {
+                window.location.href = "main.html";
+            }
+        }
+
+        // Call the redirect function on page load
+        window.onload = redirectIfLoggedIn;
     </script>
 </body>
 </html>

@@ -5,6 +5,18 @@ public class LoginService {
     // Simulated database of usernames and passwords
     private static final Map<String, String> userDatabase = new HashMap<>();
 
+    // Method to register new users
+    public boolean register(String username, String password) {
+        if (userDatabase.containsKey(username)) {
+            // User already exists
+            return false;
+        } else {
+            // Add the new user to the database
+            userDatabase.put(username, password);
+            return true;
+        }
+    }
+
     static {
         // Add some hardcoded usernames and passwords (replace with your actual database logic)
         userDatabase.put("user1", "password1");
@@ -19,11 +31,5 @@ public class LoginService {
 
         // Check if the username exists in the database and if the provided password matches the stored password
         return storedPassword != null && storedPassword.equals(password);
-    }
-
-    // Method to handle login requests
-    public boolean handleLogin(String username, String password) {
-        // Authenticate the user
-        return authenticate(username, password);
     }
 }

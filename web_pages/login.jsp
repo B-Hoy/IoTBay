@@ -2,26 +2,19 @@
 <%@ page import="uts.iotbay.LoginService"%>
 <%@ page import="javax.servlet.http.HttpServletResponse"%>
 
-<html>
-<head>
-    <title>Login</title>
-</head>
-<body>
-    <%
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        boolean isAuthenticated = false;
+<%
+    String email = request.getParameter("email");
+    String password = request.getParameter("password");
+    boolean isAuthenticated = false;
 
-        if (email != null && password != null) {
-            LoginService loginService = new LoginService();
-            isAuthenticated = loginService.handleLogin(email, password);
-        }
+    if (email != null && password != null) {
+        LoginService loginService = new LoginService();
+        isAuthenticated = loginService.authenticate(email, password); // Using authenticate method from LoginService
+    }
 
-        if (isAuthenticated) {
-            response.setStatus(HttpServletResponse.SC_OK);
-        } else {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        }
-    %>
-</body>
-</html>
+    if (isAuthenticated) {
+        response.setStatus(HttpServletResponse.SC_OK);
+    } else {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    }
+%>

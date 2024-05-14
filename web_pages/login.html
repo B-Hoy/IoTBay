@@ -9,17 +9,17 @@
 <body>
     <div class="container">
         <h1>Login</h1>
-        <form id="loginForm" action="login.jsp" method="POST">
+        <form id="loginForm" action="#" method="POST">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required><br>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required><br>
             <button type="submit">Login</button>
+            <!-- Add error message for unfilled fields -->
             <p id="errorMessage" style="display: none;">Please fill in all fields.</p>
             <p id="loginErrorMessage" style="display: none;">Incorrect email or password.</p>
         </form>
     </div>
-
     <script>
         document.getElementById("loginForm").addEventListener("submit", function(event) {
             event.preventDefault(); // Prevent form submission
@@ -48,7 +48,7 @@
                     }
                 }
             };
-            xhr.send("email=" + encodeURIComponent(email) + "&password=" + encodeURIComponent(password));
+            xhr.send("email=" + email + "&password=" + password);
         });
     </script>
 </body>

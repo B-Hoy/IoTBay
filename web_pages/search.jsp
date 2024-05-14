@@ -18,8 +18,13 @@
         if (db == null){
 	        db = new Database();
 	        application.setAttribute("database", db);}
-
-            
+        String form_search_query = request.getParameter("search");
+        Product[] search_results;
+        if (form_search_query != null){
+            search_results = db.search_for_product(form_search_query);
+        }else{
+            search_results = db.get_all_products();
+        }
 	%>
     <body>
         <div class="topnav">
@@ -32,10 +37,13 @@
         
         <!--Testing the search bar -->
         <div class="search-container">
-            <input type="text" id="searchbar" name="search" placeholder="Search products, brands..." onkeyup="search()">
-            <button onclick="search()" class="search-button">
-                <span>Search</span>
-            </button>
+            
+            <form action="/iotbay/web_pages/search.jsp" method="POST">
+                <input type="hidden" id="form_type" name="form_type" value="search">
+                <label for="search"></label><br>
+	            <input type="text" id="search" name="search" placeholder="Search products, brands...">
+                <input type="submit" value="Submit">
+            </form> 
         </div>
         
 
@@ -159,38 +167,5 @@
                 </div>
             </div>
         </div>
-       
-
-        <!-- Javascript to fetch and display suggestions-->
-        <script>
-            function search() {
-                var input = document.getElementById('searchbar').value;
-                var suggestionsPanel = document.getElementById('suggestions');
-            
-                // Only fetch suggestions if the input length is sufficient
-                if (input.length > 2) {
-                    fetch(`api/suggestions?query=${encodeURIComponent(input)}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            suggestionsPanel.innerHTML = '';
-                            data.forEach(suggestion => {
-                                const div = document.createElement('div');
-                                div.textContent = suggestion;
-                                div.addEventListener('click', function() {
-                                    document.getElementById('searchbar').value = this.textContent;
-                                    search(); // Trigger the search when a suggestion is clicked
-                                });
-                                suggestionsPanel.appendChild(div);
-                            });
-                        })
-                        .catch(error => console.error('Error:', error));
-                } else {
-                    suggestionsPanel.innerHTML = ''; // Clear suggestions if input is too short
-                }
-            }
-            </script>
-            
-        
-        
     </body>
 </html>

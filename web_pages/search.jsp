@@ -1,4 +1,10 @@
-<!DOCTYPE html>
+<%@page import="uts.iotbay.Database"%>
+<%@page import="uts.iotbay.User"%>
+<%@page import="uts.iotbay.UserLogEntry"%>
+<%@page import="uts.iotbay.Product"%>
+<%@page import="uts.iotbay.Cart"%>
+
+
 <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -6,6 +12,20 @@
         <title>Home | Ecommerce</title>
         <link rel="stylesheet" href="search.css">
     </head>
+    <%
+        // This check is *required* to use the db, otherwise data isn't fully persistent
+        Database db = (Database)application.getAttribute("database");
+        if (db == null){
+	        db = new Database();
+	        application.setAttribute("database", db);}
+        String form_search_query = request.getParameter("search");
+        Product[] search_results;
+        if (form_search_query != null){
+            search_results = db.search_for_product(form_search_query);
+        }else{
+            search_results = db.get_all_products();
+        }
+	%>
     <body>
         <div class="topnav">
             <a href="main.html">Home</a>
@@ -15,13 +35,17 @@
             <a href="logout.html" style="float:right;">Logout</a>
         </div>
         
- 
+        <!--Testing the search bar -->
         <div class="search-container">
-            <input type="text" id="searchbar" name="search" placeholder="Search products, brands..." onkeyup="search()">
-            <button onclick="search()" class="search-button">
-                <span>Search</span>
-            </button>
+            
+            <form action="/iotbay/web_pages/search.jsp" method="POST">
+                <input type="hidden" id="form_type" name="form_type" value="search">
+                <label for="search"></label><br>
+	            <input type="text" id="search" name="search" placeholder="Search products, brands...">
+                <input type="submit" value="Submit">
+            </form> 
         </div>
+        
 
         
         <div class="content">
@@ -143,9 +167,5 @@
                 </div>
             </div>
         </div>
-       
-       
-        
-        
     </body>
 </html>

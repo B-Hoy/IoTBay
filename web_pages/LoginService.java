@@ -32,15 +32,4 @@ public class LoginService {
         // Check if the username exists in the database and if the provided password matches the stored password
         return storedPassword != null && storedPassword.equals(password);
     }
-
-    // Method to handle login requests
-    public boolean handleLogin(String username, String password) {
-        // Authenticate the user
-        boolean isAuthenticated = authenticate(username, password);
-        
-        // Return authentication status
-        return isAuthenticated;
-    }
 }
-
-

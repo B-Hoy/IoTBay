@@ -9,13 +9,12 @@
 <body>
     <div class="container">
         <h1>Login</h1>
-        <form id="loginForm" action="LoginService.java" method="POST">
+        <form id="loginForm" action="LoginService" method="POST">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required><br>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required><br>
             <button type="submit">Login</button>
-            <!-- Add error message for unfilled fields -->
             <p id="errorMessage" style="display: none;">Please fill in all fields.</p>
             <p id="loginErrorMessage" style="display: none;">Incorrect email or password.</p>
         </form>
@@ -33,18 +32,15 @@
                 return;
             }
 
-            // Send AJAX request to server-side authentication endpoint
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "login", true); // Assuming "login" is your endpoint for authentication
+            xhr.open("POST", "LoginService", true); // LoginService endpoint for authentication
             xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
-                        // Redirect to main page if authentication is successful
-                        window.location.href = "main.html";
+                        window.location.href = "main.html"; // Redirect on success
                     } else {
-                        // Display error message if authentication fails
-                        document.getElementById("loginErrorMessage").style.display = "block";
+                        document.getElementById("loginErrorMessage").style.display = "block"; // Show error on failure
                     }
                 }
             };

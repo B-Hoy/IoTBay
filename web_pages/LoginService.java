@@ -1,6 +1,9 @@
 import java.util.HashMap;
 import java.util.Map;
 
+import uts.iotbay.Database;
+import uts.iotbay.User;
+
 public class LoginService {
     // Simulated database of usernames and passwords
     private static final Map<String, String> userDatabase = new HashMap<>();
@@ -24,12 +27,12 @@ public class LoginService {
         userDatabase.put("user3", "password3");
     }
 
-    // Method to authenticate user credentials
-    public boolean authenticate(String username, String password) {
-        // Retrieve the password associated with the username from the database
-        String storedPassword = userDatabase.get(username);
-
-        // Check if the username exists in the database and if the provided password matches the stored password
-        return storedPassword != null && storedPassword.equals(password);
+    public boolean authenticate(String email, String password) {
+        // Retrieve the user from the database based on the provided email
+        Database db = new Database();
+        User user = db.get_user(email);
+    
+        // Check if the user exists and if the provided password matches the stored password
+        return user != null && user.get_password().equals(password);
     }
 }

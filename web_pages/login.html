@@ -9,14 +9,14 @@
 <body>
     <div class="container">
         <h1>Login</h1>
-        <form id="loginForm" action="main.jsp" method="POST">
+        
+        <form id="loginForm" action="login.jsp" method="POST">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required><br>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required><br>
             <button type="submit">Login</button>
             <p id="errorMessage" style="display: none;">Please fill in all fields.</p>
-            <p id="loginErrorMessage" style="display: none;">Incorrect email or password.</p>
         </form>
     </div>
     <script>
@@ -30,36 +30,7 @@
                 event.preventDefault();
             }
         });
-
-        // Function to handle form submission
-        function submitForm() {
-            var email = document.getElementById("email").value;
-            var password = document.getElementById("password").value;
-
-            // Make sure both email and password are provided
-            if (email && password) {
-                // If all fields are filled, submit the form
-                // and let login.jsp handle the authentication
-                return true;
-            } else {
-                // Display error message if any field is missing
-                document.getElementById("errorMessage").textContent = "Please fill in all fields.";
-                document.getElementById("errorMessage").style.display = "block";
-                return false; // Prevent form submission
-            }
-        }
-
-        // Function to redirect user after successful login
-        function redirectIfLoggedIn() {
-            // Check if there's a session ID set
-            // If yes, redirect to main.html
-            if (localStorage.getItem("session_id")) {
-                window.location.href = "main.jsp";
-            }
-        }
-
-        // Call the redirect function on page load
-        window.onload = redirectIfLoggedIn;
     </script>
 </body>
 </html>
+

@@ -1,0 +1,27 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build task",
+            "type": "shell",
+            "command": "javac WEB-INF/classes/uts/iotbay/*java",
+            "windows": {
+                "command": "javac WEB-INF\\classes\\uts\\iotbay\\*java"
+            },
+            "options": {
+            },
+        },
+        {
+            "label": "Package task",
+            "dependsOn": ["Build task"],
+            "type": "shell",
+            "command": "jar -cvf iotbay.war *",
+            "options": {
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}

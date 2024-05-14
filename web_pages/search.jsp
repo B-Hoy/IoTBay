@@ -1,4 +1,10 @@
-<!DOCTYPE html>
+<%@page import="uts.iotbay.Database"%>
+<%@page import="uts.iotbay.User"%>
+<%@page import="uts.iotbay.UserLogEntry"%>
+<%@page import="uts.iotbay.Product"%>
+<%@page import="uts.iotbay.Cart"%>
+
+
 <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -6,6 +12,15 @@
         <title>Home | Ecommerce</title>
         <link rel="stylesheet" href="search.css">
     </head>
+    <%
+        // This check is *required* to use the db, otherwise data isn't fully persistent
+        Database db = (Database)application.getAttribute("database");
+        if (db == null){
+	        db = new Database();
+	        application.setAttribute("database", db);}
+
+            
+	%>
     <body>
         <div class="topnav">
             <a href="main.html">Home</a>
@@ -15,13 +30,14 @@
             <a href="logout.html" style="float:right;">Logout</a>
         </div>
         
- 
+        <!--Testing the search bar -->
         <div class="search-container">
             <input type="text" id="searchbar" name="search" placeholder="Search products, brands..." onkeyup="search()">
             <button onclick="search()" class="search-button">
                 <span>Search</span>
             </button>
         </div>
+        
 
         
         <div class="content">
@@ -144,7 +160,36 @@
             </div>
         </div>
        
-       
+
+        <!-- Javascript to fetch and display suggestions-->
+        <script>
+            function search() {
+                var input = document.getElementById('searchbar').value;
+                var suggestionsPanel = document.getElementById('suggestions');
+            
+                // Only fetch suggestions if the input length is sufficient
+                if (input.length > 2) {
+                    fetch(`api/suggestions?query=${encodeURIComponent(input)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            suggestionsPanel.innerHTML = '';
+                            data.forEach(suggestion => {
+                                const div = document.createElement('div');
+                                div.textContent = suggestion;
+                                div.addEventListener('click', function() {
+                                    document.getElementById('searchbar').value = this.textContent;
+                                    search(); // Trigger the search when a suggestion is clicked
+                                });
+                                suggestionsPanel.appendChild(div);
+                            });
+                        })
+                        .catch(error => console.error('Error:', error));
+                } else {
+                    suggestionsPanel.innerHTML = ''; // Clear suggestions if input is too short
+                }
+            }
+            </script>
+            
         
         
     </body>

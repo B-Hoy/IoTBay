@@ -12,12 +12,14 @@
 
     // Check if email and password are provided
     if (email != null && password != null) {
-        // Authenticate user using database
-        User user = db.authenticateUser(email, password);
+        // Authenticate user using LoginService
+        LoginService loginService = new LoginService();
+        boolean isAuthenticated = loginService.authenticate(email, password);
 
         // Check if authentication is successful
-        if (user != null) {
+        if (isAuthenticated) {
             // Successful login
+            User user = db.get_user(email); // Retrieve user details
             session.setAttribute("user", user);
             response.sendRedirect("main.html");
         } else {
@@ -29,4 +31,3 @@
         out.println("<p>Please provide email and password.</p>");
     }
 %>
-

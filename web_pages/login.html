@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <h1>Login</h1>
-        <form id="loginForm" action="#" method="POST">
+        <form id="loginForm" action="LoginService.java" method="POST">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required><br>
             <label for="password">Password:</label>
@@ -33,9 +33,9 @@
                 return;
             }
 
-            // Send AJAX request to server-side script for authentication
+            // Send AJAX request to server-side authentication endpoint
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "login.jsp", true);
+            xhr.open("POST", "login", true); // Assuming "login" is your endpoint for authentication
             xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {

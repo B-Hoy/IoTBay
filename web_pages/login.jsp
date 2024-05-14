@@ -25,7 +25,79 @@ This is the output of a JSP page that is supposed to connect to a SQLite databas
 </td>
 </tr>
 </table>
+<<<<<<< HEAD
 
+=======
+<%
+// This check is *required* to use the db, otherwise data isn't fully persistent
+Database db = (Database)application.getAttribute("database");
+if (db == null){
+    db = new Database();
+    application.setAttribute("database", db);
+    %>
+    Had to make a new db :(
+    <%
+}
+
+// All lines above (23-30) need to be in every JSP page
+
+// \/ \/ \/ User Form Data
+
+String form_email = request.getParameter("email");
+String form_password = request.getParameter("password");
+
+// ^^^ User form data
+
+String form_type = request.getParameter("form_type");
+if (form_type != null){ // if we got here through a form
+    %><%= form_type %><%
+    switch (form_type){
+        case "insert_user":
+            // Code for user insertion
+            break;
+        case "update_user":
+            // Code for user update
+            break;
+        case "delete_user":
+            // Code for user deletion
+            break;
+        case "login_user":
+            LoginService loginService = new LoginService();
+            boolean isAuthenticated = loginService.handleLogin(form_email, form_password);
+            if (isAuthenticated) {
+                // Authentication successful, set session attribute
+                session.setAttribute("userEmail", form_email);
+                response.setStatus(200); // Success status code
+            } else {
+                // Authentication failed, send appropriate response
+                response.setStatus(401); // Unauthorized status code
+            }
+            break;
+        case "logout_user":
+            // Code for user logout
+            break;
+        case "insert_product":
+            // Code for product insertion
+            break;
+        case "update_product":
+            // Code for product update
+            break;
+        case "delete_product":
+            // Code for product deletion
+            break;
+    }
+}
+
+User[] users = db.get_all_users();
+if (session.getAttribute("session_id") == null){%>
+You are not logged in.
+<%
+}else{%>
+    You are logged in as <%=db.get_user_log((int)session.getAttribute("session_id")).get_email()%>
+<%
+}
+%>
+>>>>>>> Mousa
 <table class="user_table">
     <thead><th colspan="10"><b>User Table</b></th></thead>
     <thead><th>ID</th><th>Email</th><th>First Name</th><th>Last Name</th><th>Password</th><th>Register Date</th><th>Is Admin</th><th>Card Number</th><th>Card Expiry</th><th>Phone Number</th>

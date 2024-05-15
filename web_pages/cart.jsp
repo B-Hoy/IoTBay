@@ -18,7 +18,7 @@
         <a href="search.jsp">Search</a>
         <a href="myProfile.jsp">My Profile</a>
         <a class="active" href="cart.jsp">Cart</a>
-        <a href="logout.html" style="float:right;">Logout</a>
+        <a href="logout.jsp" style="float:right;">Logout</a>
     </div>
 
    <%

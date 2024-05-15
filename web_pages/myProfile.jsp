@@ -37,7 +37,7 @@ if (session.getAttribute("session_id") != null){
         <a href="search.html">Search</a>
         <a class="active" href="#myProfile">My Profile</a>
         <a href="cart.html">Cart</a>
-        <a href="logout.html" style="float:right;">Logout</a>
+        <a href="logout.jsp" style="float:right;">Logout</a>
     </div>
 
     <div class="container">

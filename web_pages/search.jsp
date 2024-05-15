@@ -44,7 +44,7 @@
             <a class="active" href="#search">Search</a>
             <a href="myProfile.html">My Profile</a>
             <a href="cart.jsp">Cart</a>
-            <a href="logout.html" style="float:right;">Logout</a>
+            <a href="logout.jsp" style="float:right;">Logout</a>
         </div>
 
         <!--search bar -->

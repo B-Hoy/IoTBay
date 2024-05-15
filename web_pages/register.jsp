@@ -92,7 +92,7 @@ if (db == null){
             <script>
                 document.getElementById("form_type").addEventListener("submit", function() {
                     // Redirect to main.html
-                    window.location.href = "/iotbay/web_pages/main.html";
+                    window.location.href = "/iotbay/web_pages/main.jsp";
                 });
             </script>
             

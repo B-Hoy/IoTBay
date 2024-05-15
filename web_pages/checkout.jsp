@@ -124,7 +124,7 @@
           }
         
           function returnToHomePage() {
-            window.location.href = 'main.html';
+            window.location.href = 'main.jsp';
           }
         </script>
 

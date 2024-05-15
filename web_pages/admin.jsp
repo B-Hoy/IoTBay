@@ -13,7 +13,7 @@
 <body bgcolor=white>
 <%
 // This check is *required* to use the db, otherwise data isn't fully persistent
-Database db = (Database)application.getAttribute("database");
+Database db = (Database)application.getAttribute("database"); 		// enter into every class
 if (db == null){
 	db = new Database();
 	application.setAttribute("database", db);

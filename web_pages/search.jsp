@@ -3,6 +3,8 @@
 <%@page import="uts.iotbay.UserLogEntry"%>
 <%@page import="uts.iotbay.Product"%>
 <%@page import="uts.iotbay.Cart"%>
+<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 
 
 <html lang="en">
@@ -34,17 +36,16 @@
             <a href="cart.jsp">Cart</a>
             <a href="logout.html" style="float:right;">Logout</a>
         </div>
-        
+
         <!--search bar -->
         <div class="search-container">
-            
             <form action="/iotbay/web_pages/search.jsp" method="POST">
-                <input type="hidden" id="form_type" name="form_type" value="search">
-                <label for="search"></label><br>
-	            <input type="text" id="search" name="search" placeholder="Search products, brands...">
-                <input type="submit" value="Submit">
-            </form> 
+                <input type="text" id="search" name="search" placeholder="Search products..." class="search-input">
+                <button type="submit" class="search-button">Search</button> 
+            </form>
         </div>
+        
+        
         
 
         

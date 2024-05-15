@@ -23,9 +23,9 @@ if (db == null){
 
 <%
 User logged_in_user = null; // Initialize the variable
-
+int session_id = -1;
 if (session.getAttribute("session_id") != null){
-    int session_id = (Integer)session.getAttribute("session_id");
+    session_id = (Integer)session.getAttribute("session_id");
     logged_in_user = db.get_user(db.get_user_log(session_id).get_email());
 }
 %>
@@ -62,7 +62,7 @@ if (session.getAttribute("session_id") != null){
             <h3>
                 <ul>
                     <li>
-                        <% UserLogEntry[] user_logs = db.get_all_user_logs(); %>
+                        <% UserLogEntry[] user_logs = db.get_user_log_by_user(session_id); %>
                         <table class="user_table">
                             <thead><th colspan="10"><b>User Login Table</b></th></thead>
                             <thead><th>Session ID</th><th>Email</th><th>Login Date/Time</th><th>Logout Date/Time</th>

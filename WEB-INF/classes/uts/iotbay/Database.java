@@ -279,9 +279,17 @@ public class Database{
 	}
 	public UserLogEntry[] get_user_log_by_user(int session_id){
 		ArrayList<UserLogEntry> log_arr = new ArrayList<UserLogEntry>();
+		String user_email = "";
 		try{
-			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM User_Logins WHERE email = (SELECT email FROM User_Logins WHERE id = (?))");
+			PreparedStatement s = conn.prepareStatement("SELECT email FROM User_Logins WHERE id = (?) LIMIT 1");
+			s.setInt(1, session_id);
+			ResultSet r = s.executeQuery();
+			while (r.next()){
+				user_email = r.getString("email");
+			}
+			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM User_Logins WHERE email = (?)");
 			stmt.setQueryTimeout(5);
+			stmt.setString(1, user_email);
 			ResultSet results = stmt.executeQuery();
 			stmt.setInt(1, session_id);
 			while (results.next()){

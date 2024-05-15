@@ -90,80 +90,20 @@
             <div class="product-list"> 
                 <!-- all these products need to come from the database or something so they can be added to cart -->
                 <div class="row">
-                    <div class="column">
-                        <div class="card">
-                            <img src="https://cdn.thewirecutter.com/wp-content/media/2023/06/macbooks-2048px-23790-2x1-1.jpg?auto=webp&quality=75&crop=2:1&width=768&dpr=1.5" alt="Product1" style="width:100%">
-                            <h1>Laptop</h1>
-                            <p class="price">$900</p>
-                            <p>cool laptop</p>
-                            <p><button>Add to Cart</button></p>
-                        </div>
-                    </div>
-                    <div class="column">
-                        <div class="card">
-                            <img src="https://m.media-amazon.com/images/I/618ihEBwiSL.__AC_SX300_SY300_QL70_FMwebp_.jpg" alt="Product2" style="width:100%">
-                            <h1>Mouse</h1>
-                            <p class="price">$50</p>
-                            <p>cool mouse</p>
-                            <p><button>Add to Cart</button></p>
-                        </div>
-                    </div>
-                    <div class="column">
-                        <div class="card">
-                            <img src="product2.jpg" alt="Product2" style="width:100%">
-                            <h1>Product 2</h1>
-                            <p class="price">$50</p>
-                            <p>Description</p>
-                            <p><button>Add to Cart</button></p>
-                        </div>
-                    </div>
-                    <div class="column">
-                        <div class="card">
-                            <img src="product2.jpg" alt="Product2" style="width:100%">
-                            <h1>Product 2</h1>
-                            <p class="price">$50</p>
-                            <p>Description</p>
-                            <p><button>Add to Cart</button></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="column">
-                        <div class="card">
-                            <img src="product1.jpg" alt="Product1" style="width:100%">
-                            <h1>Product 1</h1>
-                            <p class="price">$20</p>
-                            <p>Description</p>
-                            <p><button>Add to Cart</button></p>
-                        </div>
-                    </div>
-                    <div class="column">
-                        <div class="card">
-                            <img src="product2.jpg" alt="Product2" style="width:100%">
-                            <h1>Product 2</h1>
-                            <p class="price">$50</p>
-                            <p>Description</p>
-                            <p><button>Add to Cart</button></p>
-                        </div>
-                    </div>
-                    <div class="column">
-                        <div class="card">
-                            <img src="product2.jpg" alt="Product2" style="width:100%">
-                            <h1>Product 2</h1>
-                            <p class="price">$50</p>
-                            <p>Description</p>
-                            <p><button>Add to Cart</button></p>
-                        </div>
-                    </div>
-                    <div class="column">
-                        <div class="card">
-                            <img src="product2.jpg" alt="Product2" style="width:100%">
-                            <h1>Product 2</h1>
-                            <p class="price">$50</p>
-                            <p>Description</p>
-                            <p><button>Add to Cart</button></p>
-                        </div>
-                    </div>
+                    <% if (search_results != null && search_results.length > 0) {
+                        for (Product product : search_results) { %>
+                            <div class="column">
+                                <div class="card">
+                                    <img src="<%= "web_pages/images/" + product.get_image_location() %>" alt="<%= product.get_name() %>" style="width:100%">
+                                    <h1><%= product.get_name() %></h1>
+                                    <p class="price">$<%= product.get_price() %></p>
+                                    <p><button>Add to Cart</button></p>
+                                </div>
+                            </div>
+                        <%  }
+                       } else { %>
+                            <p>No products found.</p>
+                        <% } %>
                 </div>
             </div>
         </div>

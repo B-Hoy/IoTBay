@@ -66,10 +66,10 @@ if (form_type != null){ // if we got here through a form
 <body>
     <div class="topnav">
         <a class="active" href="#home">Home</a>
-        <a href="search.html">Search</a>
+        <a href="search.jsp">Search</a>
         <a href="myProfile.jsp">My Profile</a>
-        <a href="cart.html">Cart</a>
-        <a href="logout.html" style="float:right;">Logout</a>
+        <a href="cart.jsp">Cart</a>
+        <a href="logout.jsp" style="float:right;">Logout</a>
     </div>
 
     <div class="product-list"> 

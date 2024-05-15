@@ -33,10 +33,10 @@ if (session.getAttribute("session_id") != null){
 
 <body>
     <div class="topnav">
-        <a href="main.html">Home</a>
-        <a href="search.html">Search</a>
+        <a href="main.jsp">Home</a>
+        <a href="search.jsp">Search</a>
         <a class="active" href="#myProfile">My Profile</a>
-        <a href="cart.html">Cart</a>
+        <a href="cart.jsp">Cart</a>
         <a href="logout.jsp" style="float:right;">Logout</a>
     </div>
 

@@ -277,6 +277,22 @@ public class Database{
 		}
 		return log;
 	}
+	public UserLogEntry[] get_user_log_by_user(int session_id){
+		ArrayList<UserLogEntry> log_arr = new ArrayList<UserLogEntry>();
+		try{
+			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM User_Logins WHERE email = (SELECT email FROM User_Logins WHERE id = (?))");
+			stmt.setQueryTimeout(5);
+			ResultSet results = stmt.executeQuery();
+			stmt.setInt(1, session_id);
+			while (results.next()){
+				log_arr.add(new UserLogEntry(results.getInt("id"), results.getString("email"), results.getString("login_date"), results.getString("logout_date")));
+			}
+		}catch (SQLException e){
+			System.out.println("ERROR: " + e.getMessage());
+		}
+
+		return log_arr.toArray(new UserLogEntry[]{});
+	}
 	public UserLogEntry[] get_all_user_logs(){
 		ArrayList<UserLogEntry> log_arr = new ArrayList<UserLogEntry>();
 		try{
@@ -595,7 +611,6 @@ public class Database{
 	}
 	public void create_payment(String owner_email){
 
-		
 	}
 	public void disconnect(){
 		if (conn != null){

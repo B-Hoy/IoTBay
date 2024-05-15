@@ -44,6 +44,8 @@
  .counter {
     display: flex;
     align-items: center;
+    margin: 0 auto;
+   display: block;
  }
  
  .counter button {
@@ -74,7 +76,3 @@
     cursor: pointer;
  }
  
-
-
-
-

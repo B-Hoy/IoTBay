@@ -1,0 +1,56 @@
+<%@page import="uts.iotbay.Database"%>
+<%@page import="uts.iotbay.User"%>
+<%@page import="uts.iotbay.UserLogEntry"%>
+<%@page import="uts.iotbay.Product"%>
+<%@page import="uts.iotbay.Cart"%>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | Ecommerce</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <div class="topnav">
+        <a class="active" href="#home">Home</a>
+        <a href="search.html">Search</a>
+        <a href="myProfile.html">My Profile</a>
+        <a href="cart.jsp">Cart</a>
+        <a href="logout.html" style="float:right;">Logout</a>
+    </div>
+
+
+
+    <div class="product-list"> 
+        <%//Get the database object from the application context
+            Database db = (Database) application.getAttribute("database");
+            if(db == null) {
+              db = new Database();
+              application.setAttribute("database", db);
+            }
+
+            //Get all products from database
+            List<Product> products = db.get_all_products();
+            for (Product product : products) {
+        %>
+
+        <div class="column">
+            <div class="card">
+                <img src="<%= product.get_image_location() %>" style="width:100%">
+                <h1><%= product.get_name() %></h1>
+                <p class="price">$<%= product.get_price() %></p>
+                <form action="/iotbay/web_pages/cart.jsp" method="POST">
+                    <input type="hidden" name="form_type" value="insert_cart">
+                    <input type="hidden" name="id" value="<%= product.get_id() %>">
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit">Add to Cart</button>
+                </form>
+            </div>
+        </div>
+        <% } %>
+    </div>
+
+</body>
+</html>

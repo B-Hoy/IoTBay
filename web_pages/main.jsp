@@ -1,7 +1,7 @@
 <%@page import="uts.iotbay.Database"%>
 <%@page import="uts.iotbay.User"%>
 <%@page import="uts.iotbay.UserLogEntry"%>
-
+<%@page import="uts.iotbay.Product"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,9 +17,7 @@ Database db = (Database)application.getAttribute("database"); 		// enter into ev
 if (db == null){
 	db = new Database();
 	application.setAttribute("database", db);
-	%>
-	Had to make a new db :(
-	<%
+
 }
 
 
@@ -35,7 +33,6 @@ String form_phone_num = request.getParameter("phone_num");
 
 String form_type = request.getParameter("form_type");
 if (form_type != null){ // if we got here through a form
-	%><%= form_type %><%
 	switch (form_type){
 		case "insert":
 			db.create_user(form_email, form_first_name, form_last_name, form_password, false, form_card_num, form_card_exp, form_phone_num); // make user
@@ -47,7 +44,7 @@ if (form_type != null){ // if we got here through a form
 			db.delete_user(form_email);
 			break;
 		case "login":
-			int local_session_id = db.add_user_login(form_email);
+			int local_session_id = db.add_user_login(form_email, form_password);
 			if (local_session_id != -1){
 				session.setAttribute("session_id", local_session_id);
 			}else{
@@ -66,90 +63,35 @@ if (form_type != null){ // if we got here through a form
 <body>
     <div class="topnav">
         <a class="active" href="#home">Home</a>
-        <a href="search.html">Search</a>
+        <a href="search.jsp">Search</a>
         <a href="myProfile.jsp">My Profile</a>
-        <a href="cart.html">Cart</a>
+        <a href="cart.jsp">Cart</a>
         <a href="logout.html" style="float:right;">Logout</a>
     </div>
 
     <div class="product-list"> 
-        <!-- all these products need to come from the database or something so they can be added to cart -->
-        <div class="row">
-            <div class="column">
-                <div class="card">
-                    <img src="https://cdn.thewirecutter.com/wp-content/media/2023/06/macbooks-2048px-23790-2x1-1.jpg?auto=webp&quality=75&crop=2:1&width=768&dpr=1.5" alt="Product1" style="width:100%">
-                    <h1>Laptop</h1>
-                    <p class="price">$900</p>
-                    <p>cool laptop</p>
-                    <p><button>Add to Cart</button></p>
-                </div>
-            </div>
-            <div class="column">
-                <div class="card">
-                    <img src="https://m.media-amazon.com/images/I/618ihEBwiSL.__AC_SX300_SY300_QL70_FMwebp_.jpg" alt="Product2" style="width:100%">
-                    <h1>Mouse</h1>
-                    <p class="price">$50</p>
-                    <p>cool mouse</p>
-                    <p><button>Add to Cart</button></p>
-                </div>
-            </div>
-            <div class="column">
-                <div class="card">
-                    <img src="product2.jpg" alt="Product2" style="width:100%">
-                    <h1>Product 2</h1>
-                    <p class="price">$50</p>
-                    <p>Description</p>
-                    <p><button>Add to Cart</button></p>
-                </div>
-            </div>
-            <div class="column">
-                <div class="card">
-                    <img src="product2.jpg" alt="Product2" style="width:100%">
-                    <h1>Product 2</h1>
-                    <p class="price">$50</p>
-                    <p>Description</p>
-                    <p><button>Add to Cart</button></p>
-                </div>
+        <%
+            //Get all products from database
+            Product[] products = db.get_all_products();
+            for (Product product : products) {
+        %>
+
+        <div class="column">
+            <div class="card">
+                <img src="images/<%= product.get_image_location() %>" alt="<%= product.get_name() %>"
+                style="width:100%">
+                <h1><%= product.get_name() %></h1>
+                <p class="price">$<%= product.get_price() %></p>
+                <form action="/iotbay/web_pages/cart.jsp" method="POST">
+                    <input type="hidden" name="form_type" value="insert_cart">
+                    <input type="hidden" name="id" value="<%= product.get_id() %>">
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit">Add to Cart</button>
+                </form>
             </div>
         </div>
-        <div class="row">
-            <div class="column">
-                <div class="card">
-                    <img src="product1.jpg" alt="Product1" style="width:100%">
-                    <h1>Product 1</h1>
-                    <p class="price">$20</p>
-                    <p>Description</p>
-                    <p><button>Add to Cart</button></p>
-                </div>
-            </div>
-            <div class="column">
-                <div class="card">
-                    <img src="product2.jpg" alt="Product2" style="width:100%">
-                    <h1>Product 2</h1>
-                    <p class="price">$50</p>
-                    <p>Description</p>
-                    <p><button>Add to Cart</button></p>
-                </div>
-            </div>
-            <div class="column">
-                <div class="card">
-                    <img src="product2.jpg" alt="Product2" style="width:100%">
-                    <h1>Product 2</h1>
-                    <p class="price">$50</p>
-                    <p>Description</p>
-                    <p><button>Add to Cart</button></p>
-                </div>
-            </div>
-            <div class="column">
-                <div class="card">
-                    <img src="product2.jpg" alt="Product2" style="width:100%">
-                    <h1>Product 2</h1>
-                    <p class="price">$50</p>
-                    <p>Description</p>
-                    <p><button>Add to Cart</button></p>
-                </div>
-            </div>
-        </div>
+        <% } %>
     </div>
+
 </body>
 </html>

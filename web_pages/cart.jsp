@@ -14,9 +14,9 @@
 </head>
  <body>
     <div class="topnav">
-        <a href="main.html">Home</a>
-        <a href="search.html">Search</a>
-        <a href="myProfile.html">My Profile</a>
+        <a href="main.jsp">Home</a>
+        <a href="search.jsp">Search</a>
+        <a href="myProfile.jsp">My Profile</a>
         <a class="active" href="cart.jsp">Cart</a>
         <a href="logout.html" style="float:right;">Logout</a>
     </div>
@@ -32,42 +32,34 @@
 
 
     //Get cart from session and if doesn't exist than make new cart
-    Cart cart == (Cart) session.getAttribute("cart");
-    if(cart = null){
-      cart = new Cart(); session.setAttribute("cart", cart);
+    Cart cart = (Cart) session.getAttribute("cart");
+    if(cart == null){
+      cart = new Cart(); 
+      session.setAttribute("cart", cart);
     }
 
-
-
-    //Get Form parameters
+    //Get From parameters
     String formType = request.getParameter("form_type");
-    String productIdStr = request.getParameter("id");
-    String quantityStr = request.getParameter("quantity");
+    String productIdString = request.getParameter("id");
+    String quantityString = request.getParameter("quantity");
 
-    if (formType != null && productIdStr != null) {
-      int productId = Integer.parseInt(productIdStr);
+    if(productIdString != null && formType != null){
+      int productId = Integer.parseInt(productIdString);
 
-      if("insert_cart".equals(formType)) {
-          int quantity = Integer.parseInt(quantityStr);
+      if("insert_cart".equals(formType)){
+         int quantity = Integer.parseInt(quantityString);
+         //Adding product
+         cart.add_product(productId, quantity);
 
-          //Get product details from database
-          Product product = db.get_product(productId);
-
-          //Add product to cart
-          cart.addItem(product, quantity);
-
-      }else if("update_quantity".equals(formType)) {
-          int quantity = Integer.parseInt(quantityStr);
-
-          //Update product quantity in cart
-          cart.updateItem(productId, quantity);
-
-      }else if ("remove_item".equals(formType)) {
-          //Remove item from cart
-          cart.removeItem(productId);
+      //Delete product
+      }else if("remove_item".equals(formType)){
+         cart.delete_product(productId);
+      }else if("update_quantity".equals(formType)){
+         int quantity = Integer.parseInt(quantityString);
+      }else if("reduce_cart".equals(formType)){
+         cart.add_product(productId, Integer.valueOf(quantityString) * -1);
       }
-  }
-
+    }
 
   //Get products in cart
   Product[] cartProducts = cart.get_cart_inventory(db);
@@ -79,52 +71,54 @@
 
    <div class="cart-item">
       <% double totalPrice = 0.0; %>
+
       <% for(Product product : cartProducts){ %>
+         <% int productQuantity = product.get_quantity(); %>
+
          <div class="cart-item">
+            <!-- <img src="images/<%= product.get_image_location() %>" alt="<%= product.get_name() %>" style="width:100%"> -->
             <h4><%= product.get_name() %></h4>
             <p>Price: $<%= product.get_price() %></p>
 
             <div class="counter">
+               <%= productQuantity %><br>
                <form action="/iotbay/web_pages/cart.jsp" method="POST">
-                  <input type="hidden" name="form_type" value="update_quantity">
-                  <input type="hidden" name="id" value="<%= product.get_id() %>">
-                  <input type="hidden" name="quantity" value="<%= product.get_quantity() - 1 %>">
-                  <button type="submit">-</button>
-
-                  <input type="number" id="quantity" name="quantity" min="1" value="<%= product.get_quantity() %>" readonly>
-               </form>
-
-               <form action="/iotbay/web_pages/cart.jsp" method="POST">
-                  <input type="hidden" name="form_type" value="update_quantity">
-                  <input type="hidden" name="id" value="<%= product.get_id() %>">
-                  <input type="hidden" name="quantity" value="<%= product.get_quantity() + 1 %>">
+                  <input type="hidden" name="form_type" value="insert_cart"> 
+                  <label for="quantity">Amount to add:</label><br>
+                  <input type="text" id="quantity" name="quantity"><br><br>
+                  <input type="hidden" name="id" value="<%= product.get_id() %>"> 
                   <button type="submit">+</button>
-               </form>   
-
+               </form>
                <form action="/iotbay/web_pages/cart.jsp" method="POST">
-                  <input type="hidden" name="form_type" value="remove_item">
-                  <input type="hidden" name="id" value="<%= product.get_id() %>">
+                  <input type="hidden" name="form_type" value="reduce_cart"> 
+                  <label for="quantity">Amount to remove:</label><br>
+                  <input type="text" id="quantity" name="quantity"><br><br>
+                  <input type="hidden" name="id" value="<%= product.get_id() %>"> 
+                  <button type="submit">+</button>
+               </form>
+               <form action="/iotbay/web_pages/cart.jsp" method="POST">
+                  <input type="hidden" name="form_type" value="remove_item"> 
+                  <input type="hidden" name="id" value="<%= product.get_id() %>"> 
                   <button type="submit">Remove</button>
                </form>
             </div>
 
-            <p>Total: $<%= product.get_price() * product.get_quantity() %></p>
-            <% totalPrice = totalPrice + product.get_price() * product.get_quantity(); %>
+            <p>Product Cost: $<%= product.get_price() * productQuantity %></p>
+            <% totalPrice += product.get_price() * productQuantity; %>
 
       </div>  
-      <% 
-      } %>
+      <% } %>
    </div>
 
    <div class="checkout-section">
       <p>Total: $<%= totalPrice %></p> 
-      <button>Checkout</button>
+      <form action="/iotbay/web_pages/checkout.jsp" method="POST">
+      <button type="submit">Checkout</button>
+      </form>
    </div>
 
  </body>
 </html>
-
-
 
 
 

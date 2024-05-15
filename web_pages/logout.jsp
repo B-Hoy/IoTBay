@@ -10,6 +10,14 @@ if (db == null){
 	db = new Database();
 	application.setAttribute("database", db);
 }
+String form_type = request.getParameter("form_type");
+if (form_type != null ){
+    switch (form_type){
+        case "delete_user":
+            db.delete_user(db.get_user_log((int)session.getAttribute("session_id")).get_email());
+            break;
+    }
+}
 if (session.getAttribute("session_id") != null){ // just to make sure the user is actually logged in
     db.set_user_logout((int)session.getAttribute("session_id"));
     session.removeAttribute("session_id");

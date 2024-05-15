@@ -73,6 +73,10 @@ if (session.getAttribute("session_id") != null){
                     </li>
                 </ul>
             </h3>
+            <form action="/iotbay/web_pages/logout.jsp" method="POST">
+                <input type="hidden" id="form_type" name="form_type" value="delete_user">
+                <input type="submit" value="DELETE Account">
+            </form>
         </div>
     </div>
 

@@ -59,6 +59,20 @@ if (session.getAttribute("session_id") != null){
                 <li>Order #002 - Date: February 5, 2024</li>
                 <li>Order #003 - Date: March 10, 2024</li>
             </ul>
+            <h3>
+                <ul>
+                    <li>
+                        <% UserLogEntry[] user_logs = db.get_all_user_logs(); %>
+                        <table class="user_table">
+                            <thead><th colspan="10"><b>User Login Table</b></th></thead>
+                            <thead><th>Session ID</th><th>Email</th><th>Login Date/Time</th><th>Logout Date/Time</th>
+                            <% for (int i = 0; i < user_logs.length; i++){%>
+                            <tr><td><%=user_logs[i].get_session_id()%></td><td><%=user_logs[i].get_email()%></td><td><%=user_logs[i].get_login_date()%></td><td><%=user_logs[i].get_logout_date()%></td>
+                            <%}%>
+                        </table>
+                    </li>
+                </ul>
+            </h3>
         </div>
     </div>
 

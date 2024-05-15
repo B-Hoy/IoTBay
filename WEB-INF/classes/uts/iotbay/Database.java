@@ -50,6 +50,10 @@ public class Database{
 			stmt.executeUpdate("CREATE TABLE Orders (id INTEGER NOT NULL PRIMARY KEY, user_email TEXT, items TEXT, finalised INTEGER, payment_id INTEGER, date_created TEXT NOT NULL)");
 			stmt.executeUpdate("INSERT INTO Orders VALUES (20001, 'testacc1@uts.edu.au', '10001|5,10002|50,10003|500', 0, 0, DATETIME('now', '+10 hours'))");
 			stmt.executeUpdate("INSERT INTO Orders VALUES (20002, 'testacc2@uts.edu.au', '10001|2000', 1, 0, DATETIME('now', '+10 hours'))");
+
+			stmt.executeUpdate("DROP TABLE IF EXISTS Payments");
+			stmt.executeUpdate("CREATE TABLE Payments (id INTEGER NOT NULL PRIMARY KEY, user_email TEXT, amount REAL NOT NULL, card_num TEXT NOT NULL, card_exp TEXT NOT NULL, cart_cvc INTEGER NOT NULL)");
+			stmt.executeUpdate("");
         } catch (Exception e){
             System.out.println("ERROR: " + e.getMessage());
         }
@@ -515,20 +519,83 @@ public class Database{
 			System.out.println("ERROR: " + e.getMessage());
 		}
 	}
-	public Product[] search_for_product(String search){
+	// public Product[] search_for_product(String search){
+	// 	ArrayList<Product> prod_arr = new ArrayList<Product>();
+	// 	try{
+	// 		PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Products WHERE name LIKE (?)");
+	// 		stmt.setString(1, "%" + search + "%");
+	// 		ResultSet results = stmt.executeQuery();
+	// 		while (results.next()){
+	// 			prod_arr.add(new Product(results.getInt("id"), results.getString("name"), results.getDouble("price"), results.getInt("rating"), results.getString("brand"), results.getInt("quantity"), results.getString("image_location")));
+	// 		}
+	// 	}
+	// 	catch (SQLException e){
+	// 		System.out.println("ERROR: " + e.getMessage());
+	// 	}
+	// 	return prod_arr.toArray(new Product[]{});
+	// }
+
+	public Product[] search_for_product(String search, String[] ratings, String[] brands, String priceRange) {
 		ArrayList<Product> prod_arr = new ArrayList<Product>();
-		try{
-			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Products WHERE name LIKE (?)");
+		try {
+			StringBuilder query = new StringBuilder("SELECT * FROM Products WHERE name LIKE ?");
+			
+			// Add dynamic filters based on user input
+			if (ratings != null && ratings.length > 0) {
+				query.append(" AND rating >= ").append(ratings[0]); // simplest approach for demonstration
+			}
+	
+			if (brands != null && brands.length > 0) {
+				query.append(" AND brand IN (");
+				for (int i = 0; i < brands.length; i++) {
+					query.append("?");
+					if (i < brands.length - 1) query.append(", ");
+				}
+				query.append(")");
+			}
+	
+			if (priceRange != null && !priceRange.isEmpty()) {
+				String[] range = priceRange.split("-");
+				query.append(" AND price BETWEEN ").append(range[0]).append(" AND ").append(range[1]);
+			}
+	
+			PreparedStatement stmt = conn.prepareStatement(query.toString());
 			stmt.setString(1, "%" + search + "%");
+			
+			int index = 2; // Start from the second parameter
+			if (brands != null) {
+				for (String brand : brands) {
+					stmt.setString(index++, brand);
+				}
+			}
+			
 			ResultSet results = stmt.executeQuery();
-			while (results.next()){
+			while (results.next()) {
 				prod_arr.add(new Product(results.getInt("id"), results.getString("name"), results.getDouble("price"), results.getInt("rating"), results.getString("brand"), results.getInt("quantity"), results.getString("image_location")));
 			}
-		}
-		catch (SQLException e){
+		} catch (SQLException e) {
 			System.out.println("ERROR: " + e.getMessage());
 		}
 		return prod_arr.toArray(new Product[]{});
+	}
+	public Order[] get_orders_by_email(String user_email){
+		ArrayList<Order> order_arr = new ArrayList<Order>();
+		try{
+			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Orders WHERE user_email = (?)");
+			stmt.setQueryTimeout(5);
+			stmt.setString(1, user_email);
+			ResultSet results = stmt.executeQuery();
+			while (results.next()){
+				order_arr.add(new Order(this, results.getInt("id"), results.getString("user_email"), results.getString("items"), results.getBoolean("finalised"), results.getInt("payment_id"), results.getString("date_created")));
+			}
+		}catch (SQLException e){
+			System.out.println("ERROR: " + e.getMessage());
+		}
+		return order_arr.toArray(new Order[]{});
+	}
+	public void create_payment(String owner_email){
+
+		
 	}
 	public void disconnect(){
 		if (conn != null){

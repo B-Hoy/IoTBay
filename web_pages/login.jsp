@@ -1,6 +1,7 @@
 <%@ page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="uts.iotbay.Database"%>
 <%@ page import="uts.iotbay.User"%>
+<%@ page import="uts.iotbay.UserLogEntry"%>
 <%@ page import="java.util.*"%>
 <%@ page import="java.io.*"%>
 <!DOCTYPE html>

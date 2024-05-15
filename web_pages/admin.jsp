@@ -60,10 +60,8 @@ if (request.getParameter("quantity") != null){
 String form_brand = request.getParameter("brand");
 String form_image_location = request.getParameter("image_location");
 // ^^^ Product form data
-
 String form_type = request.getParameter("form_type");
 if (form_type != null){ // if we got here through a form
-	%><%= form_type %><%
 	switch (form_type){
 		case "insert_user":
 			db.create_user(form_email, form_first_name, form_last_name, form_password, false, form_card_num, form_card_exp, form_phone_num);
@@ -133,9 +131,6 @@ if (form_type != null){ // if we got here through a form
 			break;
 		case "admin_login":
 			if (form_password.equals("admin")){
-	}
-}
-
 User[] users = db.get_all_users();
 if (session.getAttribute("session_id") == null){%>
 You are not logged in.
@@ -405,7 +400,10 @@ No cart found in cookies
 	</td>
 	</tr>
 </table>
-<%}else{%>
+<%
+		}
+	}
+}else{%>
 	<form action="/iotbay/web_pages/admin.jsp" method="POST">
 		<input type="hidden" id="form_type" name="form_type" value="admin_login">
 		<label for="password">Admin Password:</label><br>

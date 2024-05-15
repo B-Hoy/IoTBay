@@ -35,7 +35,7 @@
             <a href="logout.html" style="float:right;">Logout</a>
         </div>
         
-        <!--Testing the search bar -->
+        <!--search bar -->
         <div class="search-container">
             
             <form action="/iotbay/web_pages/search.jsp" method="POST">
@@ -94,7 +94,7 @@
                         for (Product product : search_results) { %>
                             <div class="column">
                                 <div class="card">
-                                    <img src="<%= "web_pages/images/" + product.get_image_location() %>" alt="<%= product.get_name() %>" style="width:100%">
+                                    <img src="<%= "images/" + product.get_image_location() %>" alt="<%= product.get_name() %>" style="width:100%">
                                     <h1><%= product.get_name() %></h1>
                                     <p class="price">$<%= product.get_price() %></p>
                                     <p><button>Add to Cart</button></p>

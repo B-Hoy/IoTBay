@@ -11,26 +11,12 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body bgcolor=white>
-<table border="0">
-<tr>
-<td align=center>
-<img src="images/cat.gif">
-</td>
-<td>
-<h1>JSP Database Testing</h1>
-This is the output of a JSP page that is supposed to connect to a SQLite database, generate, get and print some driver code
-</td>
-</tr>
-</table>
 <%
 // This check is *required* to use the db, otherwise data isn't fully persistent
 Database db = (Database)application.getAttribute("database");
 if (db == null){
 	db = new Database();
 	application.setAttribute("database", db);
-	%>
-	Had to make a new db :(
-	<%
 }
 // All lines above (23-30) need to be in every JSP page
 
@@ -145,6 +131,8 @@ if (form_type != null){ // if we got here through a form
 		case "remove_order":
 			db.remove_item_order(form_id, form_id2);
 			break;
+		case "admin_login":
+			if (form_password.equals("admin")){
 	}
 }
 
@@ -170,7 +158,7 @@ You are not logged in.
 <table class="user_form_table">
 <thead><th><b>Make a new user:</b></th><th><b>Update User Details:</b></th><th><b>Delete User:</b> </th></thead>
 <tr><td>
-<form action="/iotbay/web_pages/hello.jsp" method="POST">
+<form action="/iotbay/web_pages/admin.jsp" method="POST">
 	<input type="hidden" id="form_type" name="form_type" value="insert_user">
 	<label for="email">Email:</label><br>
 	<input type="text" id="email" name="email"><br>
@@ -190,7 +178,7 @@ You are not logged in.
 </form> 
 </td>
 <td>
-<form action="/iotbay/web_pages/hello.jsp" method="POST">
+<form action="/iotbay/web_pages/admin.jsp" method="POST">
 	<input type="hidden" id="form_type" name="form_type" value="update_user">
 	<label for="email">Email:</label><br>
 	<input type="text" id="email" name="email"><br>
@@ -210,7 +198,7 @@ You are not logged in.
 </form>
 </td>
 <td>
-<form action="/iotbay/web_pages/hello.jsp" method="POST">
+<form action="/iotbay/web_pages/admin.jsp" method="POST">
 	<input type="hidden" id="form_type" name="form_type" value="delete_user">
 	<label for="email">Email:</label><br>
 	<input type="text" id="email" name="email"><br>
@@ -232,7 +220,7 @@ You are not logged in.
 	<thead><th><b>Login As User</b></th><th><b>Logout as Current User</b></th></thead>
 	<tr>
 		<td>
-		<form action="/iotbay/web_pages/hello.jsp" method="POST">
+		<form action="/iotbay/web_pages/admin.jsp" method="POST">
 			<input type="hidden" id="form_type" name="form_type" value="login_user">
 			<label for="email">Email:</label><br>
 			<input type="text" id="email" name="email"><br>
@@ -242,7 +230,7 @@ You are not logged in.
 		</form>
 		</td>
 		<td>
-			<form action="/iotbay/web_pages/hello.jsp" method="POST">
+			<form action="/iotbay/web_pages/admin.jsp" method="POST">
 				<input type="hidden" id="form_type" name="form_type" value="logout_user">
 				<input type="submit" value="Logout">
 			</form>
@@ -262,7 +250,7 @@ You are not logged in.
 <table class="product_table">
 	<thead><th><b>Make a new product:</b></th><th><b>Update Product Details:</b></th><th><b>Delete Product:</b></th></thead>
 	<tr><td>
-	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+	<form action="/iotbay/web_pages/admin.jsp" method="POST">
 		<input type="hidden" id="form_type" name="form_type" value="insert_product">
 		<label for="name">Name:</label><br>
 		<input type="text" id="name" name="name"><br>
@@ -278,7 +266,7 @@ You are not logged in.
 	</form> 
 	</td>
 	<td>
-	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+	<form action="/iotbay/web_pages/admin.jsp" method="POST">
 		<input type="hidden" id="form_type" name="form_type" value="update_product">
 		<label for="id">Product ID:</label><br>
 		<input type="text" id="id" name="id"><br>
@@ -298,7 +286,7 @@ You are not logged in.
 	</form>
 	</td>
 	<td>
-	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+	<form action="/iotbay/web_pages/admin.jsp" method="POST">
 		<input type="hidden" id="form_type" name="form_type" value="delete_product">
 		<label for="id">Product ID:</label><br>
 		<input type="text" id="id" name="id"><br>
@@ -325,7 +313,7 @@ No cart found in cookies
 <table class="cart_form_table">
 	<thead><th><b>Add product to cart:</b></th><th><b>Delete product from cart:</b></th><th><b>Purge cart items:</b></th><th><b>Remove cart from cookies:</b></th></thead>
 	<tr><td>
-	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+	<form action="/iotbay/web_pages/admin.jsp" method="POST">
 		<input type="hidden" id="form_type" name="form_type" value="insert_cart">
 		<label for="name">Product ID:</label><br>
 		<input type="text" id="id" name="id"><br>
@@ -335,7 +323,7 @@ No cart found in cookies
 	</form> 
 	</td>
 	<td>
-	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+	<form action="/iotbay/web_pages/admin.jsp" method="POST">
 		<input type="hidden" id="form_type" name="form_type" value="remove_cart">
 		<label for="id">Product ID:</label><br>
 		<input type="text" id="id" name="id"><br>
@@ -343,13 +331,13 @@ No cart found in cookies
 	</form>
 	</td>
 	<td>
-	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+	<form action="/iotbay/web_pages/admin.jsp" method="POST">
 	<input type="hidden" id="form_type" name="form_type" value="purge_cart">
 	<input type="submit" value="Submit">
 	</form>
 	</td>
 	<td>
-	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+	<form action="/iotbay/web_pages/admin.jsp" method="POST">
 		<input type="hidden" id="form_type" name="form_type" value="delete_cart">
 		<input type="submit" value="Submit">
 	</form>
@@ -380,13 +368,13 @@ No cart found in cookies
 <table class="order_func_table">
 	<thead><th><b>Create order from cart:</b></th><th><b>Delete order:</b></th><th><b>Delete item from order:</b></th><th><b>Insert item into order:</b></th></thead>
 	<tr><td>
-	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+	<form action="/iotbay/web_pages/admin.jsp" method="POST">
 		<input type="hidden" id="form_type" name="form_type" value="create_order">
 		<input type="submit" value="Submit">
 	</form> 
 	</td>
 	<td>
-	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+	<form action="/iotbay/web_pages/admin.jsp" method="POST">
 		<input type="hidden" id="form_type" name="form_type" value="delete_order">
 		<label for="id">Order ID:</label><br>
 		<input type="text" id="id" name="id"><br>
@@ -394,7 +382,7 @@ No cart found in cookies
 	</form>
 	</td>
 	<td>
-	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+	<form action="/iotbay/web_pages/admin.jsp" method="POST">
 	<input type="hidden" id="form_type" name="form_type" value="remove_order">
 		<label for="id">Order ID:</label><br>
 		<input type="text" id="id" name="id"><br>
@@ -404,7 +392,7 @@ No cart found in cookies
 	</form>
 	</td>
 	<td>
-	<form action="/iotbay/web_pages/hello.jsp" method="POST">
+	<form action="/iotbay/web_pages/admin.jsp" method="POST">
 		<input type="hidden" id="form_type" name="form_type" value="insert_order">
 		<label for="id">Order ID:</label><br>
 		<input type="text" id="id" name="id"><br>
@@ -417,5 +405,13 @@ No cart found in cookies
 	</td>
 	</tr>
 </table>
+<%}else{%>
+	<form action="/iotbay/web_pages/admin.jsp" method="POST">
+		<input type="hidden" id="form_type" name="form_type" value="admin_login">
+		<label for="password">Admin Password:</label><br>
+			<input type="text" id="password" name="password"><br>
+		<input type="submit" value="Submit">
+	</form>
+<%}%>
 </body>
 </html>

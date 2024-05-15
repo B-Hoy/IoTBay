@@ -50,6 +50,10 @@ public class Database{
 			stmt.executeUpdate("CREATE TABLE Orders (id INTEGER NOT NULL PRIMARY KEY, user_email TEXT, items TEXT, finalised INTEGER, payment_id INTEGER, date_created TEXT NOT NULL)");
 			stmt.executeUpdate("INSERT INTO Orders VALUES (20001, 'testacc1@uts.edu.au', '10001|5,10002|50,10003|500', 0, 0, DATETIME('now', '+10 hours'))");
 			stmt.executeUpdate("INSERT INTO Orders VALUES (20002, 'testacc2@uts.edu.au', '10001|2000', 1, 0, DATETIME('now', '+10 hours'))");
+
+			stmt.executeUpdate("DROP TABLE IF EXISTS Payments");
+			stmt.executeUpdate("CREATE TABLE Payments (id INTEGER NOT NULL PRIMARY KEY, user_email TEXT, amount REAL NOT NULL, card_num TEXT NOT NULL, card_exp TEXT NOT NULL, cart_cvc INTEGER NOT NULL)");
+			stmt.executeUpdate("");
         } catch (Exception e){
             System.out.println("ERROR: " + e.getMessage());
         }
@@ -529,6 +533,25 @@ public class Database{
 			System.out.println("ERROR: " + e.getMessage());
 		}
 		return prod_arr.toArray(new Product[]{});
+	}
+	public Order[] get_orders_by_email(String user_email){
+		ArrayList<Order> order_arr = new ArrayList<Order>();
+		try{
+			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Orders WHERE user_email = (?)");
+			stmt.setQueryTimeout(5);
+			stmt.setString(1, user_email);
+			ResultSet results = stmt.executeQuery();
+			while (results.next()){
+				order_arr.add(new Order(this, results.getInt("id"), results.getString("user_email"), results.getString("items"), results.getBoolean("finalised"), results.getInt("payment_id"), results.getString("date_created")));
+			}
+		}catch (SQLException e){
+			System.out.println("ERROR: " + e.getMessage());
+		}
+		return order_arr.toArray(new Order[]{});
+	}
+	public void create_payment(String owner_email){
+
+		
 	}
 	public void disconnect(){
 		if (conn != null){

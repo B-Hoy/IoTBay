@@ -15,19 +15,29 @@
         <link rel="stylesheet" href="search.css">
     </head>
     <%
-        // This check is *required* to use the db, otherwise data isn't fully persistent
-        Database db = (Database)application.getAttribute("database");
-        if (db == null){
-	        db = new Database();
-	        application.setAttribute("database", db);}
-        String form_search_query = request.getParameter("search");
-        Product[] search_results;
-        if (form_search_query != null){
-            search_results = db.search_for_product(form_search_query);
-        }else{
-            search_results = db.get_all_products();
-        }
-	%>
+    // Ensure database connection
+    Database db = (Database)application.getAttribute("database");
+    if (db == null){
+        db = new Database();
+        application.setAttribute("database", db);
+    }
+
+    // Retrieving form parameters
+    String form_search_query = request.getParameter("search");
+    String[] ratings = request.getParameterValues("rating");
+    String[] brands = request.getParameterValues("brand");
+    String priceRange = request.getParameter("priceRange");
+
+    // Declare search_results array
+    Product[] search_results = null;
+
+    if (form_search_query != null) {
+        search_results = db.search_for_product(form_search_query, ratings, brands, priceRange);
+    } else {
+        search_results = db.get_all_products();
+    }
+%>
+
     <body>
         <div class="topnav">
             <a href="main.html">Home</a>
@@ -39,7 +49,7 @@
 
         <!--search bar -->
         <div class="search-container">
-            <form action="/iotbay/web_pages/search.jsp" method="POST">
+            <form action="/iotbay/web_pages/search.jsp" method="GET">
                 <input type="text" id="search" name="search" placeholder="Search products..." class="search-input">
                 <button type="submit" class="search-button">Search</button> 
             </form>
@@ -51,26 +61,29 @@
         
         <div class="content">
              <!-- Example filters-->
-            <div class="filters">
+             
+                <div class="filters">
+                    <form action="/iotbay/web_pages/search.jsp" method="POST">
                 <div class="filter-section">
                     <h3>Customer Review</h3>
                     <ul>
-                        <li><input type="checkbox" id="4stars" name="rating" value="4">&nbsp;<label for="4stars">★★★★ & Up</label></li>
-                        <li><input type="checkbox" id="3stars" name="rating" value="3">&nbsp;<label for="3stars">★★★ & Up</label></li>
-                        <li><input type="checkbox" id="2stars" name="rating" value="2">&nbsp;<label for="2stars">★★ & Up</label></li>
-                        <li><input type="checkbox" id="1star" name="rating" value="1">&nbsp;<label for="1star">★ & Up</label></li>
+                        <li><input type="checkbox" id="rating" name="rating" value="4">&nbsp;<label for="rating">★★★★ & Up</label></li>
+                        <li><input type="checkbox" id="rating" name="rating" value="3">&nbsp;<label for="rating">★★★ & Up</label></li>
+                        <li><input type="checkbox" id="rating" name="rating" value="2">&nbsp;<label for="rating">★★ & Up</label></li>
+                        <li><input type="checkbox" id="rating" name="rating" value="1">&nbsp;<label for="rating">★ & Up</label></li>
                     </ul>
                 </div>
             
+                <!-- Simplified for brevity -->
                 <div class="filter-section">
                     <h3>Brand</h3>
                     <ul>
-                        <li><input type="checkbox" id="brand1" name="brand" value="brand1">&nbsp;<label for="brand1">brand1</label></li>
-                        <li><input type="checkbox" id="brand2" name="brand" value="brand2">&nbsp;<label for="brand2">brand2</label></li>
-                        <!-- Add more brands as needed -->
-                        <li><a href="#">See more</a></li>
+                        <li><input type="checkbox" id="brand1" name="brand" value="Connect SmartHome">&nbsp;<label for="brand1">Connect SmartHome</label></li>
+                        <li><input type="checkbox" id="brand2" name="brand" value="Arlo">&nbsp;<label for="brand2">Arlo</label></li>
+                        <li><input type="checkbox" id="brand3" name="brand" value="Ring">&nbsp;<label for="brand3">Ring</label></li>
                     </ul>
                 </div>
+
             
                 <div class="filter-section">
                     <h3>Price</h3>
@@ -83,11 +96,12 @@
                         <!-- Add more price ranges as needed -->
                     </ul>
                     <div>
-                        <input type="text" id="minPrice" name="minPrice" placeholder="$ Min">
-                        <button type="button">Go</button>
+                        <button type="submit" class="filter-button">Go</button>
                     </div>
                 </div>
+            </form>
             </div>
+        
             <div class="product-list"> 
                 <!-- all these products need to come from the database or something so they can be added to cart -->
                 <div class="row">

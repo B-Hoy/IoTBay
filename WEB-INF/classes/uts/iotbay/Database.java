@@ -515,21 +515,66 @@ public class Database{
 			System.out.println("ERROR: " + e.getMessage());
 		}
 	}
-	public Product[] search_for_product(String search){
+	// public Product[] search_for_product(String search){
+	// 	ArrayList<Product> prod_arr = new ArrayList<Product>();
+	// 	try{
+	// 		PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Products WHERE name LIKE (?)");
+	// 		stmt.setString(1, "%" + search + "%");
+	// 		ResultSet results = stmt.executeQuery();
+	// 		while (results.next()){
+	// 			prod_arr.add(new Product(results.getInt("id"), results.getString("name"), results.getDouble("price"), results.getInt("rating"), results.getString("brand"), results.getInt("quantity"), results.getString("image_location")));
+	// 		}
+	// 	}
+	// 	catch (SQLException e){
+	// 		System.out.println("ERROR: " + e.getMessage());
+	// 	}
+	// 	return prod_arr.toArray(new Product[]{});
+	// }
+
+	public Product[] search_for_product(String search, String[] ratings, String[] brands, String priceRange) {
 		ArrayList<Product> prod_arr = new ArrayList<Product>();
-		try{
-			PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Products WHERE name LIKE (?)");
+		try {
+			StringBuilder query = new StringBuilder("SELECT * FROM Products WHERE name LIKE ?");
+			
+			// Add dynamic filters based on user input
+			if (ratings != null && ratings.length > 0) {
+				query.append(" AND rating >= ").append(ratings[0]); // simplest approach for demonstration
+			}
+	
+			if (brands != null && brands.length > 0) {
+				query.append(" AND brand IN (");
+				for (int i = 0; i < brands.length; i++) {
+					query.append("?");
+					if (i < brands.length - 1) query.append(", ");
+				}
+				query.append(")");
+			}
+	
+			if (priceRange != null && !priceRange.isEmpty()) {
+				String[] range = priceRange.split("-");
+				query.append(" AND price BETWEEN ").append(range[0]).append(" AND ").append(range[1]);
+			}
+	
+			PreparedStatement stmt = conn.prepareStatement(query.toString());
 			stmt.setString(1, "%" + search + "%");
+			
+			int index = 2; // Start from the second parameter
+			if (brands != null) {
+				for (String brand : brands) {
+					stmt.setString(index++, brand);
+				}
+			}
+			
 			ResultSet results = stmt.executeQuery();
-			while (results.next()){
+			while (results.next()) {
 				prod_arr.add(new Product(results.getInt("id"), results.getString("name"), results.getDouble("price"), results.getInt("rating"), results.getString("brand"), results.getInt("quantity"), results.getString("image_location")));
 			}
-		}
-		catch (SQLException e){
+		} catch (SQLException e) {
 			System.out.println("ERROR: " + e.getMessage());
 		}
 		return prod_arr.toArray(new Product[]{});
 	}
+	
 	public void disconnect(){
 		if (conn != null){
 			try{

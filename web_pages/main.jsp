@@ -47,7 +47,7 @@ if (form_type != null){ // if we got here through a form
 			db.delete_user(form_email);
 			break;
 		case "login":
-			int local_session_id = db.add_user_login(form_email);
+			int local_session_id = db.add_user_login(form_email, form_password);
 			if (local_session_id != -1){
 				session.setAttribute("session_id", local_session_id);
 			}else{

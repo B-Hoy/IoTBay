@@ -3,6 +3,7 @@
 <%@page import="uts.iotbay.UserLogEntry"%>
 <%@page import="uts.iotbay.Product"%>
 <%@page import="uts.iotbay.Cart"%>
+<%@page import="java.text.DecimalFormat"%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -76,7 +77,7 @@
          <% int productQuantity = product.get_quantity(); %>
 
          <div class="cart-item">
-            <!-- <img src="images/<%= product.get_image_location() %>" alt="<%= product.get_name() %>" style="width:100%"> -->
+            <img src="images/<%= product.get_image_location() %>" alt="<%= product.get_name() %>" style="width:10vw">
             <h4><%= product.get_name() %></h4>
             <p>Price: $<%= product.get_price() %></p>
 
@@ -111,7 +112,7 @@
    </div>
 
    <div class="checkout-section">
-      <p>Total: $<%= totalPrice %></p> 
+      <p>Total: $<%= (totalPrice == 0) ? "0.00" : (new DecimalFormat("#.00")).format(totalPrice) %></p> 
       <form action="/iotbay/web_pages/checkout.jsp" method="POST">
       <button type="submit">Checkout</button>
       </form>

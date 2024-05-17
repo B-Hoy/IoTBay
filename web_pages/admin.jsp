@@ -76,8 +76,6 @@ if (form_type != null){ // if we got here through a form
 			int local_session_id = db.add_user_login(form_email, form_password);
 			if (local_session_id != -1){
 				session.setAttribute("session_id", local_session_id);
-			}else{
-				// Login failed, reload the page or throw a popup or something
 			}
 			break;
 		case "logout_user":
@@ -130,7 +128,7 @@ if (form_type != null){ // if we got here through a form
 			db.remove_item_order(form_id, form_id2);
 			break;
 		case "admin_login":
-			if (form_password.equals("admin")){
+			if (form_password.equals("admin")){ // System admin can change this to a more secure password before deploying
 				session.setAttribute("is_admin", "true");
 			}
 	}
@@ -147,13 +145,11 @@ You are not logged in.
 %>
 <table class="user_table">
 	<thead><th colspan="10"><b>User Table</b></th></thead>
-	<thead><th>ID</th><th>Email</th><th>First Name</th><th>Last Name</th><th>Password</th><th>Register Date</th><th>Is Admin</th><th>Card Number</th><th>Card Expiry</th><th>Phone Number</th>
+	<thead><th>ID</th><th>Email</th><th>First Name</th><th>Last Name</th><th>Password</th><th>Register Date</th><th>Is Staff</th><th>Card Number</th><th>Card Expiry</th><th>Phone Number</th>
 	<% for (int i = 0; i < users.length; i++){%>
-	<tr><td><%=users[i].get_id()%></td><td><%=users[i].get_email()%></td><td><%=users[i].get_first_name()%></td><td><%=users[i].get_last_name()%></td><td><%=users[i].get_password()%></td><td><%=users[i].get_reg_date()%></td><td><%=users[i].get_is_admin_string().toString()%></td><td><%=users[i].get_card_num()%></td><td><%=users[i].get_card_exp()%></td><td><%=users[i].get_phone_num()%></td>
+	<tr><td><%=users[i].get_id()%></td><td><%=users[i].get_email()%></td><td><%=users[i].get_first_name()%></td><td><%=users[i].get_last_name()%></td><td><%=users[i].get_password()%></td><td><%=users[i].get_reg_date()%></td><td><%=users[i].get_is_staff_string().toString()%></td><td><%=users[i].get_card_num()%></td><td><%=users[i].get_card_exp()%></td><td><%=users[i].get_phone_num()%></td>
 	<%}%>
 </table>
-
-<%= new String("It Works!") %>
 <br>
 <table class="user_form_table">
 <thead><th><b>Make a new user:</b></th><th><b>Update User Details:</b></th><th><b>Delete User:</b> </th></thead>

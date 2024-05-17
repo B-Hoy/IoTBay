@@ -6,21 +6,21 @@ public class User {
     String last_name;
     String password;
     String reg_date;
-    boolean is_admin;
+    boolean is_staff;
     String card_num;
     String card_exp;
     String phone_num;
     public User(){
 
     }
-    public User(String email, int id, String first_name, String last_name, String password, String reg_date, boolean is_admin, String card_num, String card_exp, String phone_num){
+    public User(String email, int id, String first_name, String last_name, String password, String reg_date, boolean is_staff, String card_num, String card_exp, String phone_num){
         this.id = id;
         this.email = email;
         this.first_name = first_name;
         this.last_name = last_name;
         this.password = password;
         this.reg_date = reg_date;
-        this.is_admin = is_admin;
+        this.is_staff = is_staff;
         this.card_num = card_num;
         this.card_exp = card_exp;
         this.phone_num = phone_num;
@@ -61,14 +61,14 @@ public class User {
     public String get_reg_date(){
         return reg_date;
     }
-    public void set_is_admin(boolean is_admin){
-        this.is_admin = is_admin;
+    public void set_is_staff(boolean is_staff){
+        this.is_staff = is_staff;
     }
-    public boolean get_is_admin(){
-        return is_admin;
+    public boolean get_is_staff(){
+        return is_staff;
     }
-    public String get_is_admin_string(){
-        return is_admin ? "True" : "False";
+    public String get_is_staff_string(){
+        return is_staff ? "True" : "False";
     }
     public void set_card_num(String card_num){
         this.card_num = card_num;

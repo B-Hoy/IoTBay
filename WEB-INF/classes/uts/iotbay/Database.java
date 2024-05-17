@@ -28,13 +28,31 @@ public class Database{
 			stmt.setQueryTimeout(5);
 			stmt.executeUpdate("DROP TABLE IF EXISTS Users");
 			stmt.executeUpdate("CREATE TABLE Users (email TEXT NOT NULL PRIMARY KEY, id INTEGER NOT NULL, first_name TEXT NOT NULL, last_name TEXT NOT NULL, password TEXT NOT NULL, reg_date TEXT NOT NULL, is_admin BOOL NOT NULL, card_num INTEGER, card_exp INTEGER, phone_num TEXT)");
-			stmt.executeUpdate("INSERT INTO Users VALUES('testacc1@uts.edu.au', 12345, 'Testing', 'User', 'securepassword', DATETIME('now', '+10 hours'), 0, NULL, NULL, NULL)");
-			stmt.executeUpdate("INSERT INTO Users VALUES('testacc2@uts.edu.au', 67890, 'Another', 'Tester', 'no', DATETIME('now', '+10 hours'), 1, '1234567890123456', '01/99', '+61400000000')");
+			stmt.executeUpdate("INSERT INTO Users VALUES('testacc1@uts.edu.au', 10001, 'Testing', 'User', 'securepassword', DATETIME('now', '+10 hours'), 0, NULL, NULL, NULL)");
+			stmt.executeUpdate("INSERT INTO Users VALUES('testacc2@uts.edu.au', 10002, 'Another', 'Tester', 'no', DATETIME('now', '+10 hours'), 1, '1234567890123456', '01/99', '+61400000000')");
+			stmt.executeUpdate("INSERT INTO Users VALUES('john@gmail.com', 10003, 'Another', 'Tester', 'no', DATETIME('now', '+10 hours'), 1, '1234567890123456', '01/99', '+61400000000')");
+			stmt.executeUpdate("INSERT INTO Users VALUES('testacc2@uts.edu.au', 10004, 'Another', 'Tester', 'no', DATETIME('now', '+10 hours'), 1, '1234567890123456', '01/99', '+61400000000')");
+			stmt.executeUpdate("INSERT INTO Users VALUES('testacc2@uts.edu.au', 10005, 'Another', 'Tester', 'no', DATETIME('now', '+10 hours'), 1, '1234567890123456', '01/99', '+61400000000')");
+			stmt.executeUpdate("INSERT INTO Users VALUES('testacc2@uts.edu.au', 10006, 'Another', 'Tester', 'no', DATETIME('now', '+10 hours'), 1, '1234567890123456', '01/99', '+61400000000')");
+			stmt.executeUpdate("INSERT INTO Users VALUES('testacc2@uts.edu.au', 10007, 'Another', 'Tester', 'no', DATETIME('now', '+10 hours'), 1, '1234567890123456', '01/99', '+61400000000')");
+			stmt.executeUpdate("INSERT INTO Users VALUES('testacc2@uts.edu.au', 10008, 'Another', 'Tester', 'no', DATETIME('now', '+10 hours'), 1, '1234567890123456', '01/99', '+61400000000')");
+			stmt.executeUpdate("INSERT INTO Users VALUES('testacc2@uts.edu.au', 10009, 'Another', 'Tester', 'no', DATETIME('now', '+10 hours'), 1, '1234567890123456', '01/99', '+61400000000')");
+			stmt.executeUpdate("INSERT INTO Users VALUES('testacc2@uts.edu.au', 10010, 'Another', 'Tester', 'no', DATETIME('now', '+10 hours'), 1, '1234567890123456', '01/99', '+61400000000')");
+			stmt.executeUpdate("INSERT INTO Users VALUES('testacc2@uts.edu.au', 10011, 'Another', 'Tester', 'no', DATETIME('now', '+10 hours'), 1, '1234567890123456', '01/99', '+61400000000')");
+			stmt.executeUpdate("INSERT INTO Users VALUES('testacc2@uts.edu.au', 10012, 'Another', 'Tester', 'no', DATETIME('now', '+10 hours'), 1, '1234567890123456', '01/99', '+61400000000')");
+			stmt.executeUpdate("INSERT INTO Users VALUES('testacc2@uts.edu.au', 10013, 'Another', 'Tester', 'no', DATETIME('now', '+10 hours'), 1, '1234567890123456', '01/99', '+61400000000')");
+			stmt.executeUpdate("INSERT INTO Users VALUES('testacc2@uts.edu.au', 10014, 'Another', 'Tester', 'no', DATETIME('now', '+10 hours'), 1, '1234567890123456', '01/99', '+61400000000')");
+			stmt.executeUpdate("INSERT INTO Users VALUES('testacc2@uts.edu.au', 10015, 'Another', 'Tester', 'no', DATETIME('now', '+10 hours'), 1, '1234567890123456', '01/99', '+61400000000')");
+			stmt.executeUpdate("INSERT INTO Users VALUES('testacc2@uts.edu.au', 10016, 'Another', 'Tester', 'no', DATETIME('now', '+10 hours'), 1, '1234567890123456', '01/99', '+61400000000')");
+			stmt.executeUpdate("INSERT INTO Users VALUES('testacc2@uts.edu.au', 10017, 'Another', 'Tester', 'no', DATETIME('now', '+10 hours'), 1, '1234567890123456', '01/99', '+61400000000')");
+			stmt.executeUpdate("INSERT INTO Users VALUES('testacc2@uts.edu.au', 10018, 'Another', 'Tester', 'no', DATETIME('now', '+10 hours'), 1, '1234567890123456', '01/99', '+61400000000')");
+			stmt.executeUpdate("INSERT INTO Users VALUES('testacc2@uts.edu.au', 10019, 'Another', 'Tester', 'no', DATETIME('now', '+10 hours'), 1, '1234567890123456', '01/99', '+61400000000')");
+			stmt.executeUpdate("INSERT INTO Users VALUES('testacc2@uts.edu.au', 10020, 'Another', 'Tester', 'no', DATETIME('now', '+10 hours'), 1, '1234567890123456', '01/99', '+61400000000')");
 
 			// This'll be used when the login/logout actions are set up
 			stmt.executeUpdate("DROP TABLE IF EXISTS User_Logins");
 			stmt.executeUpdate("CREATE TABLE User_Logins (id INTEGER NOT NULL PRIMARY KEY, email TEXT NOT NULL, login_date TEXT NOT NULL, logout_date TEXT)");
-			// Test data go here
+			
 			stmt.executeUpdate("DROP TABLE IF EXISTS Products");
 			// The image_location has an implicit "web_pages/images/" put at the start of it
 			// quantity = stock on hand

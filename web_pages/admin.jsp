@@ -131,6 +131,11 @@ if (form_type != null){ // if we got here through a form
 			break;
 		case "admin_login":
 			if (form_password.equals("admin")){
+				session.setAttribute("is_admin", "true");
+			}
+	}
+}
+if (session.getAttribute("is_admin") != null && ((String)session.getAttribute("is_admin")).equals("true")){
 User[] users = db.get_all_users();
 if (session.getAttribute("session_id") == null){%>
 You are not logged in.
@@ -401,8 +406,6 @@ No cart found in cookies
 	</tr>
 </table>
 <%
-		}
-	}
 }else{%>
 	<form action="/iotbay/web_pages/admin.jsp" method="POST">
 		<input type="hidden" id="form_type" name="form_type" value="admin_login">

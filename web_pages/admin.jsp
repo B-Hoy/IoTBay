@@ -7,7 +7,7 @@
 <!-- ^^^ Include these to access JSP functions --> 
 <html>
 <head>
-<title>JSP Database Testing</title>
+<title>IoTBay Administration</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body bgcolor=white>

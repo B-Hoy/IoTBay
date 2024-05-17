@@ -58,26 +58,26 @@ public class Database{
 			// quantity = stock on hand
 			stmt.executeUpdate("CREATE TABLE Products (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL, price REAL NOT NULL, rating INTEGER NOT NULL, brand TEXT NOT NULL, quantity INTEGER NOT NULL, image_location TEXT)");
 			// More test data go here
-			stmt.executeUpdate("INSERT INTO Products VALUES(10001, 'IoT-Enabled Smart Light Bulb', 15.99, 4, 'Connect SmartHome', 500, 'smart_light.jpg')");
-			stmt.executeUpdate("INSERT INTO Products VALUES(10002, 'WiFi Smart Camera', 139.49, 5, 'Arlo', 250, 'smart_camera.jpg')");
-			stmt.executeUpdate("INSERT INTO Products VALUES(10003, 'Smart Thermostat', 349.00, 3, 'Ring', 180, 'ring_camera.png')");
-			stmt.executeUpdate("INSERT INTO Products VALUES(10004, 'Echo Pro', 389.31, 3, 'Amazon', 2500, 'amazon_echo.jpg')");
-			stmt.executeUpdate("INSERT INTO Products VALUES(10005, 'Security IoT Home System', 197.52, 1, 'Simplisafe', 6694, 'simplisafe_system.png')");
-			stmt.executeUpdate("INSERT INTO Products VALUES(10006, 'Magik Toothbrush', 293.39, 5, 'Colgate', 4090, 'colgate_magik.jpg')");
-			stmt.executeUpdate("INSERT INTO Products VALUES(10007, 'U-Bolt Pro WiFi', 247.97, 5, 'Ultraloq', 9225, 'ultraloq-bolt.webp')");
-			stmt.executeUpdate("INSERT INTO Products VALUES(10008, 'Smart Room Controller', 410.48, 4, 'Vivint', 937, 'vivint_controller.png')");
-			stmt.executeUpdate("INSERT INTO Products VALUES(10009, 'Smart Speaker', 399.75, 2, 'Sonos', 8540, 'sonos_speaker.jpg')");
-			stmt.executeUpdate("INSERT INTO Products VALUES(10010, 'Nest Hub Tablet', 275.86, 3, 'Google', 1237, 'google_nest.jpg')");
-			stmt.executeUpdate("INSERT INTO Products VALUES(10011, 'Energy Monitor Wi-Fi Plug', 263.34, 4, 'TP-Link', 266, 'tplink_plug.webp')");
-			stmt.executeUpdate("INSERT INTO Products VALUES(10012, 'Android-Enabled Oven', 111.75, 2, 'Anova', 8670, 'anova_oven.png')");
-			stmt.executeUpdate("INSERT INTO Products VALUES(10013, 'Roomba Smart Vaccuum', 424.98, 2, 'iRobot', 8418, 'irobot_vacuum.jpg')");
-			stmt.executeUpdate("INSERT INTO Products VALUES(10014, 'Inverter Smart Air Conditioner', 263.78, 5, 'Ring', 364, 'mitsubishi_ac.jpg')");
-			stmt.executeUpdate("INSERT INTO Products VALUES(10015, 'Doorbell Security Camera Pro', 278.87, 2, 'Ring', 1399, 'ring_camera.png')");
-			stmt.executeUpdate("INSERT INTO Products VALUES(10016, 'Doorbell Security Camera Pro', 339.80, 1, 'Ring', 1286, 'ring_camera.png')");
-			stmt.executeUpdate("INSERT INTO Products VALUES(10017, 'Doorbell Security Camera Pro', 197.44, 1, 'Ring', 6446, 'ring_camera.png')");
-			stmt.executeUpdate("INSERT INTO Products VALUES(10018, 'Doorbell Security Camera Pro', 171.11, 3, 'Ring', 4376, 'ring_camera.png')");
-			stmt.executeUpdate("INSERT INTO Products VALUES(10019, 'Doorbell Security Camera Pro', 286.72, 4, 'Ring', 1001, 'ring_camera.png')");
-			stmt.executeUpdate("INSERT INTO Products VALUES(10020, 'Doorbell Security Camera Pro', 381.23, 5, 'Ring', 5234, 'ring_camera.png')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10001, 'IoT-Enabled Smart Light Bulb', 15.99, 4, 'Connect SmartHome', 5000, 'smart_light.jpg')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10002, 'WiFi Smart Camera', 139.49, 5, 'Arlo', 2500, 'smart_camera.jpg')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10003, 'Smart Thermostat', 349.00, 3, 'Ring', 1800, 'ring_camera.png')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10004, 'Echo Pro', 389.31, 3, 'Amazon', 25000, 'amazon_echo.jpg')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10005, 'Security IoT Home System', 197.52, 1, 'Simplisafe', 66940, 'simplisafe_system.png')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10006, 'Magik Toothbrush', 293.39, 5, 'Colgate', 40900, 'colgate_magik.jpg')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10007, 'U-Bolt Pro WiFi', 247.97, 5, 'Ultraloq', 92250, 'ultraloq-bolt.webp')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10008, 'Smart Room Controller', 410.48, 4, 'Vivint', 9370, 'vivint_controller.png')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10009, 'Smart Speaker', 399.75, 2, 'Sonos', 85400, 'sonos_speaker.jpg')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10010, 'Nest Hub Tablet', 275.86, 3, 'Google', 12370, 'google_nest.jpg')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10011, 'Energy Monitor Wi-Fi Plug', 263.34, 4, 'TP-Link', 2660, 'tplink_plug.webp')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10012, 'Android-Enabled Oven', 111.75, 2, 'Anova', 86700, 'anova_oven.png')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10013, 'Roomba Smart Vaccuum', 424.98, 2, 'iRobot', 84180, 'irobot_vacuum.jpg')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10014, 'Inverter Smart Air Conditioner', 263.78, 5, 'Ring', 3640, 'mitsubishi_ac.jpg')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10015, 'Nest Smart Speaker', 278.87, 2, 'Google', 13990, 'google_home.png')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10016, 'Wi-Fi Smart Lock', 339.80, 1, 'August', 12860, 'august_lock.png')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10017, 'WeMo Smart Light Switch', 197.44, 1, 'Belkin', 64460, 'belkin_light.png')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10018, 'Nest Wireless Smoke Alarm', 171.11, 3, 'Google', 43760, 'google_smokealarm.jpg')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10019, 'HomePod Mini', 286.72, 4, 'Apple', 10010, 'apple_homepodmini.webp')");
+			stmt.executeUpdate("INSERT INTO Products VALUES(10020, 'HomePod', 381.23, 5, 'Apple', 52340, 'apple_homepod.webp')");
 			// Product Orders
 			stmt.executeUpdate("DROP TABLE IF EXISTS Orders");
 			// Items is set up as comma-seperated, with each entry going <item id>|<amount

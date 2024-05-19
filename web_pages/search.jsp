@@ -40,9 +40,9 @@
 
     <body>
         <div class="topnav">
-            <a href="main.html">Home</a>
+            <a href="main.jsp">Home</a>
             <a class="active" href="#search">Search</a>
-            <a href="myProfile.html">My Profile</a>
+            <a href="myProfile.jsp">My Profile</a>
             <a href="cart.jsp">Cart</a>
             <a href="logout.jsp" style="float:right;">Logout</a>
         </div>

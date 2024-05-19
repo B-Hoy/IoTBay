@@ -1,3 +1,9 @@
+<%@page import="uts.iotbay.Database"%>
+<%@page import="uts.iotbay.User"%>
+<%@page import="uts.iotbay.UserLogEntry"%>
+<%@page import="uts.iotbay.Product"%>
+<%@page import="uts.iotbay.Cart"%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,86 +14,115 @@
 </head>
  <body>
     <div class="topnav">
-        <a href="main.html">Home</a>
+        <a href="main.jsp">Home</a>
         <a href="search.jsp">Search</a>
-        <a href="myProfile.html">My Profile</a>
+        <a href="myProfile.jsp">My Profile</a>
         <a class="active" href="cart.jsp">Cart</a>
         <a href="logout.jsp" style="float:right;">Logout</a>
     </div>
 
-    <h1>Shopping Cart</h1>
+   <%
+    // This check is *required* to use the db, otherwise data isn't fully persistent
+    Database db = (Database)application.getAttribute("database");
+    if (db == null){
+       db = new Database();
+       application.setAttribute("database", db);
+    }
 
 
 
-   <div class="cart-item">
-      <div class="product-Image">
-         <img src="https://cdn.thewirecutter.com/wp-content/media/2023/06/macbooks-2048px-23790-2x1-1.jpg?auto=webp&quality=75&crop=2:1&width=768&dpr=1.5" alt="Product1" style="width:20%">
-      </div>  
-      <div class="product-Details">
-         <div class="product-title">Laptop</div>
-         <p class="product-description">Good laptop, pls buy</p>
-      </div>
-      <div class="product-Price">$900</div>
-      <div class="product-Quantity">
-         <input type="number" value="1" min="1">
-      </div>
-      <div class="product-Removal">
-         <button class="product-Remove">Remove</button>
-     </div>
-   </div>
+    //Get cart from session and if doesn't exist than make new cart
+    Cart cart = (Cart) session.getAttribute("cart");
+    if(cart == null){
+      cart = new Cart(); 
+      session.setAttribute("cart", cart);
+    }
 
+    //Get From parameters
+    String formType = request.getParameter("form_type");
+    String productIdString = request.getParameter("id");
+    String quantityString = request.getParameter("quantity");
 
+    if(productIdString != null && formType != null){
+      int productId = Integer.parseInt(productIdString);
 
-   <div class="cart-item">
-      <div class="product-Image">
-         <img src="https://m.media-amazon.com/images/I/618ihEBwiSL.__AC_SX300_SY300_QL70_FMwebp_.jpg" alt="Product1" style="width:20%">
-      </div>  
-      <div class="product-Details">
-         <div class="product-title">Mouse</div>
-         <p class=" product-description">Good mouse, pls buy</p>
-      </div>
-      <div class="product-Price">$50</div>
-      <div class="product-Quantity">
-         <input type="number" value="1" min="1">
-      </div>
-      <div class="product-Removal">
-         <button class="product-Remove">Remove</button>
-     </div>
-   </div>
+      if("insert_cart".equals(formType)){
+         int quantity = Integer.parseInt(quantityString);
+         //Adding product
+         cart.add_product(productId, quantity);
 
+      //Delete product
+      }else if("remove_item".equals(formType)){
+         cart.delete_product(productId);
+      }else if("update_quantity".equals(formType)){
+         int quantity = Integer.parseInt(quantityString);
+      }else if("reduce_cart".equals(formType)){
+         cart.add_product(productId, Integer.valueOf(quantityString) * -1);
+      }
+    }
 
-
+  //Get products in cart
+  Product[] cartProducts = cart.get_cart_inventory(db);
    
+  %>  
+   
+
+   <h1>Shopping Cart</h1>
+
+   <div class="cart-item">
+      <% double totalPrice = 0.0; %>
+
+      <% for(Product product : cartProducts){ %>
+         <% int productQuantity = product.get_quantity(); %>
+
+         <div class="cart-item">
+            <!-- <img src="images/<%= product.get_image_location() %>" alt="<%= product.get_name() %>" style="width:100%"> -->
+            <h4><%= product.get_name() %></h4>
+            <p>Price: $<%= product.get_price() %></p>
+
+            <div class="counter">
+               <%= productQuantity %><br>
+               <form action="/iotbay/web_pages/cart.jsp" method="POST">
+                  <input type="hidden" name="form_type" value="insert_cart"> 
+                  <label for="quantity">Amount to add:</label><br>
+                  <input type="text" id="quantity" name="quantity"><br><br>
+                  <input type="hidden" name="id" value="<%= product.get_id() %>"> 
+                  <button type="submit">+</button>
+               </form>
+               <form action="/iotbay/web_pages/cart.jsp" method="POST">
+                  <input type="hidden" name="form_type" value="reduce_cart"> 
+                  <label for="quantity">Amount to remove:</label><br>
+                  <input type="text" id="quantity" name="quantity"><br><br>
+                  <input type="hidden" name="id" value="<%= product.get_id() %>"> 
+                  <button type="submit">+</button>
+               </form>
+               <form action="/iotbay/web_pages/cart.jsp" method="POST">
+                  <input type="hidden" name="form_type" value="remove_item"> 
+                  <input type="hidden" name="id" value="<%= product.get_id() %>"> 
+                  <button type="submit">Remove</button>
+               </form>
+            </div>
+
+            <p>Product Cost: $<%= product.get_price() * productQuantity %></p>
+            <% totalPrice += product.get_price() * productQuantity; %>
+
+      </div>  
+      <% } %>
+   </div>
+
+   <div class="checkout-section">
+      <p>Total: $<%= totalPrice %></p> 
+      <form action="/iotbay/web_pages/checkout.jsp" method="POST">
+      <button type="submit">Checkout</button>
+      </form>
+   </div>
+
  </body>
 </html>
 
 
 
-
-
-     <!--
-     <div class="cart-item">
-        <div class="cart-header">
-           <h4>Product Name</h4>
-        </div>
-        <div class="product-details">
-            <p>Description</p>
-         </div>
-         <div class="counter">
-            <button>-</button>
-            <span>1</span>
-            <button>+</button>
-         </div>
-         <div class="price-section">
-            <p>$Price</p>
-         </div>
-     </div>
-
-     <div class="checkout-section">
-        <p>Total: $100.00</p> 
-        <button>Checkout</button>
-     </div>
-   -->
+   
 
 
 

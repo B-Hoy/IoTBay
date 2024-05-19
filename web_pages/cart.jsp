@@ -113,6 +113,10 @@
 
    <div class="checkout-section">
       <p>Total: $<%= (totalPrice == 0) ? "0.00" : (new DecimalFormat("#.00")).format(totalPrice) %></p> 
+      <form action="/iotbay/web_pages/myProfile.jsp" method="POST">
+         <input type="hidden" id="form_type" name="form_type" value="create_order">
+         <button type="submit">Create Order</button>
+      </form>
       <form action="/iotbay/web_pages/checkout.jsp" method="POST">
       <button type="submit">Checkout</button>
       </form>

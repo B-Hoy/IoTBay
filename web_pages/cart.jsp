@@ -117,6 +117,8 @@
          <input type="hidden" id="form_type" name="form_type" value="create_order">
          <button type="submit">Create Order</button>
       </form>
+      <br>
+      <br>
       <form action="/iotbay/web_pages/checkout.jsp" method="POST">
       <button type="submit">Checkout</button>
       </form>

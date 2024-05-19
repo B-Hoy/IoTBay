@@ -367,7 +367,7 @@ No cart found in cookies
 	<form action="/iotbay/web_pages/admin.jsp" method="POST">
 		<input type="hidden" id="form_type" name="form_type" value="create_order">
 		<input type="submit" value="Submit">
-	</form> 
+	</form> 	
 	</td>
 	<td>
 	<form action="/iotbay/web_pages/admin.jsp" method="POST">
